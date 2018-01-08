@@ -93,9 +93,6 @@
     <ClInclude Include="Src\Bezier.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Src\BinaryReader.h">
-      <Filter>Src\Shared</Filter>
-    </ClInclude>
     <ClInclude Include="Src\DDS.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
@@ -125,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="Inc\PostProcess.h">
       <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\BinaryReader.h">
+      <Filter>Src\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +200,6 @@
     <ClCompile Include="Src\GraphicsMemory.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="Src\BinaryReader.cpp">
-      <Filter>Src\Shared</Filter>
-    </ClCompile>
     <ClCompile Include="Src\GamePad.cpp">
       <Filter>Src\Shared</Filter>
     </ClCompile>
@@ -229,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="Src\ToneMapPostProcess.cpp">
       <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\BinaryReader.cpp">
+      <Filter>Src\Shared</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

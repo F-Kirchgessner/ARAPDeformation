@@ -40,8 +40,8 @@
     <ClInclude Include="Inc\WICTextureLoader.h" />
     <ClInclude Include="Src\AlignedNew.h" />
     <ClInclude Include="Src\Bezier.h" />
-    <ClInclude Include="Src\ConstantBuffer.h" />
     <ClInclude Include="Src\BinaryReader.h" />
+    <ClInclude Include="Src\ConstantBuffer.h" />
     <ClInclude Include="Src\DemandCreate.h" />
     <ClInclude Include="Src\EffectCommon.h" />
     <ClInclude Include="Src\Geometry.h" />
@@ -57,13 +57,13 @@
     <ClCompile Include="Src\AlphaTestEffect.cpp" />
     <ClCompile Include="Src\BasicEffect.cpp" />
     <ClCompile Include="Src\BasicPostProcess.cpp" />
+    <ClCompile Include="Src\BinaryReader.cpp" />
     <ClCompile Include="Src\CommonStates.cpp" />
     <ClCompile Include="Src\DDSTextureLoader.cpp" />
     <ClCompile Include="Src\DGSLEffect.cpp" />
     <ClCompile Include="Src\DGSLEffectFactory.cpp" />
     <ClCompile Include="Src\DualPostProcess.cpp" />
     <ClCompile Include="Src\DualTextureEffect.cpp" />
-    <ClCompile Include="Src\BinaryReader.cpp" />
     <ClCompile Include="Src\EffectCommon.cpp" />
     <ClCompile Include="Src\EffectFactory.cpp" />
     <ClCompile Include="Src\EnvironmentMapEffect.cpp" />
