@@ -2,6 +2,7 @@
 #define ARAPSIMULATOR_h
 
 #include "Simulator.h"
+#include "DeformableModel.h"
 
 class ARAPSimulator:public Simulator{
 public:

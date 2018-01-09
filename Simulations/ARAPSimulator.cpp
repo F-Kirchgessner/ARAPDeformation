@@ -116,8 +116,11 @@ void ARAPSimulator::drawSomeRandomObjects()
 void ARAPSimulator::drawMovableTeapot()
 {
 	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
-	DUC->drawModelTemp(m_vfMovableObjectPos, m_vfRotate, Vec3(0.01, 0.01, 0.01));
+	//DUC->drawModelTemp(m_vfMovableObjectPos, m_vfRotate, Vec3(0.01, 0.01, 0.01));
 	//DUC->drawTeapot(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
+
+	DeformableModel model = DeformableModel(L"../benchy.sdkmesh", DUC);
+	model.draw();
 }
 
 void ARAPSimulator::drawTriangle()
