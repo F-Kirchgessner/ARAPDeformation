@@ -1,8 +1,18 @@
 #include "DeformableModel.h"
 
+DeformableModel::DeformableModel()
+{
+}
+
+
 DeformableModel::DeformableModel(wchar_t* modelPath, DrawingUtilitiesClass* DUC) {
 	this->DUC = DUC;
 	this->loadModel(modelPath);
+}
+
+DeformableModel::~DeformableModel()
+{
+	delete(this->vertexList);
 }
 
 
@@ -15,10 +25,6 @@ void DeformableModel::loadModel(wchar_t* modelPath) {
 	HRESULT hr = BinaryReader::ReadEntireFile(modelPath, v_data, &data_size);
 	uint8_t* mesh_data = v_data.get();
 
-	// Load model
-	this->model = Model::CreateFromSDKMESH(DUC->g_ppd3Device, v_data.get(), data_size, fx, false, false);
-	model->name = modelPath;
-
 	auto v_header = reinterpret_cast<const SDKMESH_HEADER*>(mesh_data);
 	auto vb_array = reinterpret_cast<const SDKMESH_VERTEX_BUFFER_HEADER*>(mesh_data + v_header->VertexStreamHeadersOffset);
 
@@ -29,11 +35,18 @@ void DeformableModel::loadModel(wchar_t* modelPath) {
 	uint8_t* buffer_data = mesh_data + buffer_data_offset;
 
 	// Convert to vertex list
-	this->vertexList = reinterpret_cast<std::pair<SimpleMath::Vector3, SimpleMath::Vector3>*>(buffer_data + (vertexHeader.DataOffset - buffer_data_offset));
+	this->vertexList = (std::pair<SimpleMath::Vector3, SimpleMath::Vector3>*) malloc(vertexHeader.NumVertices * sizeof(SimpleMath::Vector3) * 2);
+	memcpy(this->vertexList, reinterpret_cast<std::pair<SimpleMath::Vector3, SimpleMath::Vector3>*>(buffer_data + (vertexHeader.DataOffset - buffer_data_offset)), vertexHeader.NumVertices * sizeof(SimpleMath::Vector3) * 2);
+	//this->vertexList = reinterpret_cast<std::pair<SimpleMath::Vector3, SimpleMath::Vector3>*>(buffer_data + (vertexHeader.DataOffset - buffer_data_offset));
+	//memcpy(this->vertexList, this->vertexList, vertexHeader.NumVertices * sizeof(SimpleMath::Vector3));
+
+	// Load model
+	this->model = Model::CreateFromSDKMESH(DUC->g_ppd3Device, v_data.get(), data_size, fx, false, false).get();
+	//model->name = modelPath;
 }
 
 
-void DeformableModel::draw() {
+void DeformableModel::draw(DrawingUtilitiesClass* DUC) {
 	/*XMVECTOR posDX = pos.toDirectXVector();
 	XMVECTOR rotDX = rot.toDirectXVector();
 	XMVECTOR scaleDX = scale.toDirectXVector();

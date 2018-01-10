@@ -34,6 +34,8 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
+
+	DeformableModel* m_model;
 };
 
 #endif

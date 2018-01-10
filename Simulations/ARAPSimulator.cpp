@@ -40,11 +40,11 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	m_iTestCase = testCase;
 	switch (m_iTestCase)
 	{
-	case 0:
-		cout << "Teapot !\n";
-		m_vfMovableObjectPos = Vec3(0, 0, 0);
-		m_vfRotate = Vec3(0, 0, 0);
+	case 0: {
+		cout << "Draw model!\n";
+		m_model = &DeformableModel(L"../benchy.sdkmesh", DUC);
 		break;
+	}
 	case 1:
 		cout << "Random Object!\n";
 		m_iNumSpheres = 100;
@@ -119,8 +119,7 @@ void ARAPSimulator::drawMovableTeapot()
 	//DUC->drawModelTemp(m_vfMovableObjectPos, m_vfRotate, Vec3(0.01, 0.01, 0.01));
 	//DUC->drawTeapot(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
 
-	DeformableModel model = DeformableModel(L"../benchy.sdkmesh", DUC);
-	model.draw();
+	m_model->draw(DUC);
 }
 
 void ARAPSimulator::drawTriangle()

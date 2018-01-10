@@ -23,14 +23,16 @@ using namespace GamePhysics;
 class DeformableModel {
 public:
 	// Construtors
+	DeformableModel();
 	DeformableModel(wchar_t* modelPath, DrawingUtilitiesClass* DUC);
+	~DeformableModel();
 
-	void draw();
+	void draw(DrawingUtilitiesClass* DUC);
 
 
 private:
 	DrawingUtilitiesClass* DUC;
-	std::unique_ptr<Model> model;
+	Model* model;
 	std::pair<SimpleMath::Vector3, SimpleMath::Vector3>* vertexList;
 	SDKMESH_VERTEX_BUFFER_HEADER vertexHeader;
 
