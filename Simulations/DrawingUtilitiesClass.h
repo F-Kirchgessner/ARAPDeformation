@@ -61,6 +61,7 @@ class DrawingUtilitiesClass{
 	// DirectXTK simple geometric primitives
 	std::unique_ptr<GeometricPrimitive> g_pSphere;
 	std::unique_ptr<GeometricPrimitive> g_pTeapot;
+	std::unique_ptr<GeometricPrimitive> g_pMesh;
 
 	// Constructor
 	DrawingUtilitiesClass(){
@@ -75,6 +76,7 @@ class DrawingUtilitiesClass{
 		// Create DirectXTK geometric primitives for later usage
 		g_pSphere = GeometricPrimitive::CreateGeoSphere(g_pd3dImmediateContext, 2.0f, 2, false);
 		g_pTeapot = GeometricPrimitive::CreateTeapot(g_pd3dImmediateContext, 1.5f, 8, false);
+		g_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", g_pd3dImmediateContext, 0.1f, false);
 
 		// Create effect, input layout and primitive batch for position/color vertices (DirectXTK)
 		{
@@ -155,6 +157,7 @@ class DrawingUtilitiesClass{
 	
 		g_pSphere.reset();
 		g_pTeapot.reset();
+		g_pMesh.reset();
 
 		SAFE_RELEASE(g_pEffect);
 	
@@ -325,7 +328,8 @@ class DrawingUtilitiesClass{
 		g_pEffectPositionNormal->SetWorld(r * s * t * g_camera.GetWorldMatrix());
 		// Draw
 		// NOTE: The following generates one draw call per object, so performance will be bad for n>>1000 or so
-		g_pTeapot->Draw( g_pEffectPositionNormal,  g_pInputLayoutPositionNormal);
+		//g_pTeapot->Draw( g_pEffectPositionNormal,  g_pInputLayoutPositionNormal);
+		g_pMesh->Draw(g_pEffectPositionNormal, g_pInputLayoutPositionNormal);
 	}
 
 	void drawModelTemp(Vec3 pos, Vec3 rot, Vec3 scale)

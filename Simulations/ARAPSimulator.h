@@ -2,7 +2,6 @@
 #define ARAPSIMULATOR_h
 
 #include "Simulator.h"
-#include "DeformableModel.h"
 
 class ARAPSimulator:public Simulator{
 public:
@@ -34,8 +33,6 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
-
-	DeformableModel* m_model;
 };
 
 #endif

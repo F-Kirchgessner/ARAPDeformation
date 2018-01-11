@@ -42,7 +42,7 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
-		m_model = &DeformableModel(L"../benchy.sdkmesh", DUC);
+		//m_model = &DeformableModel(L"../benchy.sdkmesh", DUC);
 		break;
 	}
 	case 1:
@@ -88,12 +88,12 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 	{// handling different cases
 	case 0:
 		// rotate the teapot
-		m_vfRotate.x += timeStep;
+		/*m_vfRotate.x += timeStep;
 		if (m_vfRotate.x > 2 * M_PI) m_vfRotate.x -= 2.0f * (float)M_PI;
 		m_vfRotate.y += timeStep;
 		if (m_vfRotate.y > 2 * M_PI) m_vfRotate.y -= 2.0f * (float)M_PI;
 		m_vfRotate.z += timeStep;
-		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;
+		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;*/
 
 		break;
 	default:
@@ -116,10 +116,7 @@ void ARAPSimulator::drawSomeRandomObjects()
 void ARAPSimulator::drawMovableTeapot()
 {
 	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
-	//DUC->drawModelTemp(m_vfMovableObjectPos, m_vfRotate, Vec3(0.01, 0.01, 0.01));
-	//DUC->drawTeapot(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
-
-	m_model->draw(DUC);
+	DUC->drawTeapot(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
 }
 
 void ARAPSimulator::drawTriangle()

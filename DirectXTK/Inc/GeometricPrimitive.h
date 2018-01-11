@@ -48,6 +48,8 @@ namespace DirectX
         static std::unique_ptr<GeometricPrimitive> __cdecl CreateTeapot       (_In_ ID3D11DeviceContext* deviceContext, float size = 1, size_t tessellation = 8, bool rhcoords = true);
         static std::unique_ptr<GeometricPrimitive> __cdecl CreateCustom       (_In_ ID3D11DeviceContext* deviceContext, const std::vector<VertexPositionNormalTexture>& vertices, const std::vector<uint16_t>& indices);
 
+		static std::unique_ptr<GeometricPrimitive> __cdecl CreateMesh			(char* meshPath, _In_ ID3D11DeviceContext* deviceContext, float size = 1, bool rhcoords = true);
+
         static void __cdecl CreateCube          (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, bool rhcoords = true);
         static void __cdecl CreateBox           (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, const XMFLOAT3& size, bool rhcoords = true, bool invertn = false);
         static void __cdecl CreateSphere        (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float diameter = 1, size_t tessellation = 16, bool rhcoords = true, bool invertn = false);
@@ -60,6 +62,8 @@ namespace DirectX
         static void __cdecl CreateDodecahedron  (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, bool rhcoords = true);
         static void __cdecl CreateIcosahedron   (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, bool rhcoords = true);
         static void __cdecl CreateTeapot        (std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, size_t tessellation = 8, bool rhcoords = true);
+
+		static void __cdecl CreateMesh			(char* meshPath, std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, bool rhcoords = true);
 
         // Draw the primitive.
         void XM_CALLCONV Draw(FXMMATRIX world, CXMMATRIX view, CXMMATRIX projection, FXMVECTOR color = Colors::White, _In_opt_ ID3D11ShaderResourceView* texture = nullptr, bool wireframe = false,

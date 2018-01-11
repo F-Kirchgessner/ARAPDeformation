@@ -41,7 +41,8 @@ void DeformableModel::loadModel(wchar_t* modelPath) {
 	//memcpy(this->vertexList, this->vertexList, vertexHeader.NumVertices * sizeof(SimpleMath::Vector3));
 
 	// Load model
-	this->model = Model::CreateFromSDKMESH(DUC->g_ppd3Device, v_data.get(), data_size, fx, false, false).get();
+	this->model = Model::CreateFromSDKMESH(DUC->g_ppd3Device, v_data.get(), data_size, fx, false, false).release();
+	//this->model = Model::CreateFromSDKMESH(DUC->g_ppd3Device, L"../benchy.sdkmesh", fx, false, false).release();
 	//model->name = modelPath;
 }
 

@@ -225,12 +225,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ARAPSimulator.cpp" />
-    <ClCompile Include="DeformableModel.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DeformableModel.h" />
     <ClInclude Include="DrawingUtilitiesClass.h" />
     <ClInclude Include="Simulator.h" />
     <ClInclude Include="ARAPSimulator.h" />

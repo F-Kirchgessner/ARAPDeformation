@@ -791,3 +791,54 @@ std::unique_ptr<GeometricPrimitive> GeometricPrimitive::CreateCustom(
 
     return primitive;
 }
+
+
+//--------------------------------------------------------------------------------------
+// Mesh
+//--------------------------------------------------------------------------------------
+
+_Use_decl_annotations_
+std::unique_ptr<GeometricPrimitive> GeometricPrimitive::CreateMesh(
+	char* meshPath,
+	ID3D11DeviceContext* deviceContext,
+	float size,
+	bool rhcoords)
+{
+	VertexCollection vertices;
+	IndexCollection indices;
+	loadMesh(meshPath, vertices, indices, size, rhcoords);
+
+	// Create the primitive object.
+	std::unique_ptr<GeometricPrimitive> primitive(new GeometricPrimitive());
+
+	// Extra validation
+	if (vertices.empty() || indices.empty())
+		throw std::exception("Requires both vertices and indices");
+
+	if (indices.size() % 3)
+		throw std::exception("Expected triangular faces");
+
+	size_t nVerts = vertices.size();
+
+	for (auto it = indices.cbegin(); it != indices.cend(); ++it)
+	{
+		if (*it >= nVerts)
+		{
+			throw std::exception("Index not in vertices list");
+		}
+	}
+
+	primitive->pImpl->Initialize(deviceContext, vertices, indices);
+
+	return primitive;
+}
+
+void GeometricPrimitive::CreateMesh(
+	char* meshPath,
+	std::vector<VertexPositionNormalTexture>& vertices,
+	std::vector<uint16_t>& indices,
+	float size,
+	bool rhcoords)
+{
+	loadMesh(meshPath, vertices, indices, size, rhcoords);
+}

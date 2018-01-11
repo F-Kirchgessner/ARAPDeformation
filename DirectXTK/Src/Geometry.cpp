@@ -26,7 +26,7 @@ namespace
     inline void CheckIndexOverflow(size_t value)
     {
         // Use >=, not > comparison, because some D3D level 9_x hardware does not support 0xFFFF index values.
-        if (value >= USHRT_MAX)
+        if (value >= _UI32_MAX)
             throw std::exception("Index value out of range: cannot tesselate primitive so finely");
     }
 
@@ -1181,4 +1181,124 @@ void DirectX::ComputeTeapot(VertexCollection& vertices, IndexCollection& indices
     // Built RH above
     if (!rhcoords)
         ReverseWinding(indices, vertices);
+}
+
+
+//--------------------------------------------------------------------------------------
+// Model Loader
+//--------------------------------------------------------------------------------------
+void DirectX::loadMesh(char* filePath, VertexCollection& vertices, IndexCollection& indices, float size, bool rhcoords)
+{
+	vertices.clear();
+	indices.clear();
+
+	std::vector <float>  tmp_vertices; /// 3 floats = 1 Vertex
+	std::vector <float>  tmp_normals; /// 3 floats = 1 Normal
+	std::vector <float>  tmp_indices;
+
+	FILE * file = fopen(filePath, "r");
+	if (file == NULL) {
+		printf("Impossible to open the file !\n");
+		return;
+	}
+
+	while (1) {
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+
+		if (strcmp(lineHeader, "v") == 0) {
+			float x;
+			float y;
+			float z;
+			fscanf(file, "%f %f %f\n", &x, &y, &z);
+
+			tmp_vertices.push_back(x);
+			tmp_vertices.push_back(y);
+			tmp_vertices.push_back(z);
+		}
+		else if (strcmp(lineHeader, "vn") == 0)
+		{
+			float x;
+			float y;
+			float z;
+			fscanf(file, "%f %f %f\n", &x, &y, &z);
+			tmp_normals.push_back(x);
+			tmp_normals.push_back(y);
+			tmp_normals.push_back(z);
+
+		}
+		else if (strcmp(lineHeader, "f") == 0) {
+
+			std::string vertex1, vertex2, vertex3;
+			unsigned int vertexIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+
+			tmp_indices.push_back(vertexIndex[0]);
+			tmp_indices.push_back(vertexIndex[1]);
+			tmp_indices.push_back(vertexIndex[2]);
+		}
+	}
+
+	fclose(file);
+
+	float minx = FLT_MAX, maxx = -FLT_MAX, miny = FLT_MAX, maxy = -FLT_MAX, minz = FLT_MAX, maxz = -FLT_MAX;
+
+
+	// For each vertex of each triangle
+	for (unsigned int i = 0; i < tmp_vertices.size(); i+=3) {
+		float x = tmp_vertices[i + 0];
+		float y = tmp_vertices[i + 1];
+		float z = tmp_vertices[i + 2];
+		float xn = tmp_normals[i + 0];
+		float yn = tmp_normals[i + 1];
+		float zn = tmp_normals[i + 2];
+
+		if (minx > x)
+			minx = x;
+
+		if (miny > y)
+			miny = y;
+
+		if (minz > z)
+			minz = z;
+
+		if (maxx < x)
+			maxx = x;
+
+		if (maxy < y)
+			maxy = y;
+
+		if (maxz < z)
+			maxz = z;
+
+		XMVECTOR position = XMVectorScale({x, y, z}, size);
+		XMVECTOR normal = XMVector3Normalize({ xn , yn, zn});
+		vertices.push_back(VertexPositionNormalTexture(position, normal, g_XMZero /* 0, 0 */));
+
+	}
+
+	for (unsigned int i = 0; i < tmp_indices.size(); i += 3) {
+		index_push_back(indices, tmp_indices[i] - 1);
+		index_push_back(indices, tmp_indices[i+1] - 1);
+		index_push_back(indices, tmp_indices[i+2] - 1);
+	}
+
+
+	float midx = abs((maxx - minx)) / 2.0;
+	float midy = abs((maxy - miny)) / 2.0;
+	float midz = abs((maxz - minz)) / 2.0;
+
+	/*for (int i = 0; i < vertices.size(); i += 3) {
+		vertices[i] -= minx + midx;
+		vertices[i + 1] -= miny + midy;
+		vertices[i + 2] -= minz + midz;
+	}*/
+
+	// Built LH above
+	if (rhcoords)
+		ReverseWinding(indices, vertices);
 }
