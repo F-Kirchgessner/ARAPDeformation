@@ -65,6 +65,9 @@ namespace DirectX
 
 		static void __cdecl CreateMesh			(char* meshPath, std::vector<VertexPositionNormalTexture>& vertices, std::vector<uint16_t>& indices, float size = 1, bool rhcoords = true);
 
+		void SetVertex(uint16_t index, XMFLOAT3 pos);
+		void UpdateBuffer(ID3D11DeviceContext* deviceContext);
+
         // Draw the primitive.
         void XM_CALLCONV Draw(FXMMATRIX world, CXMMATRIX view, CXMMATRIX projection, FXMVECTOR color = Colors::White, _In_opt_ ID3D11ShaderResourceView* texture = nullptr, bool wireframe = false,
                               _In_opt_ std::function<void __cdecl()> setCustomState = nullptr ) const;

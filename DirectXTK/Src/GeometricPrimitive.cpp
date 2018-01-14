@@ -79,6 +79,13 @@ namespace
 class GeometricPrimitive::Impl
 {
 public:
+
+	ComPtr<ID3D11Buffer> mVertexBuffer;
+	ComPtr<ID3D11Buffer> mIndexBuffer;
+
+	VertexCollection vertices;
+	IndexCollection indices;
+
     void Initialize(_In_ ID3D11DeviceContext* deviceContext, const VertexCollection& vertices, const IndexCollection& indices);
 
     void XM_CALLCONV Draw(FXMMATRIX world, CXMMATRIX view, CXMMATRIX projection, FXMVECTOR color, _In_opt_ ID3D11ShaderResourceView* texture, bool wireframe, std::function<void()>& setCustomState) const;
@@ -88,8 +95,6 @@ public:
     void CreateInputLayout(_In_ IEffect* effect, _Outptr_ ID3D11InputLayout** inputLayout) const;
 
 private:
-    ComPtr<ID3D11Buffer> mVertexBuffer;
-    ComPtr<ID3D11Buffer> mIndexBuffer;
 
     UINT mIndexCount;
 
@@ -195,6 +200,9 @@ void GeometricPrimitive::Impl::Initialize(ID3D11DeviceContext* deviceContext, co
 
     CreateBuffer(device.Get(), vertices, D3D11_BIND_VERTEX_BUFFER, &mVertexBuffer);
     CreateBuffer(device.Get(), indices, D3D11_BIND_INDEX_BUFFER, &mIndexBuffer);
+
+	this->vertices = vertices;
+	this->indices = indices;
 
     mIndexCount = static_cast<UINT>(indices.size());
 }
@@ -841,4 +849,17 @@ void GeometricPrimitive::CreateMesh(
 	bool rhcoords)
 {
 	loadMesh(meshPath, vertices, indices, size, rhcoords);
+}
+
+void GeometricPrimitive::SetVertex(uint16_t index, XMFLOAT3 pos) {
+	this->pImpl->vertices[index].position = pos;
+	
+}
+
+void GeometricPrimitive::UpdateBuffer(ID3D11DeviceContext* deviceContext) {
+	ComPtr<ID3D11Device> device;
+	deviceContext->GetDevice(&device);
+
+	CreateBuffer(device.Get(), this->pImpl->vertices, D3D11_BIND_VERTEX_BUFFER, &this->pImpl->mVertexBuffer);
+	CreateBuffer(device.Get(), this->pImpl->indices, D3D11_BIND_INDEX_BUFFER, &this->pImpl->mIndexBuffer);
 }

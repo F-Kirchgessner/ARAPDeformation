@@ -318,6 +318,11 @@ class DrawingUtilitiesClass{
 		drawTeapot(pos.toDirectXVector(),rot.toDirectXVector(),scale.toDirectXVector());
 	}
 
+	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
+	{
+		drawMesh(pos.toDirectXVector(), rot.toDirectXVector(), scale.toDirectXVector());
+	}
+
 	void drawTeapot(const XMVECTOR pos,const XMVECTOR rot,const XMVECTOR scale)
 	{	
 		// Setup position/normal effect (per object variables)
@@ -328,100 +333,24 @@ class DrawingUtilitiesClass{
 		g_pEffectPositionNormal->SetWorld(r * s * t * g_camera.GetWorldMatrix());
 		// Draw
 		// NOTE: The following generates one draw call per object, so performance will be bad for n>>1000 or so
-		//g_pTeapot->Draw( g_pEffectPositionNormal,  g_pInputLayoutPositionNormal);
-		g_pMesh->Draw(g_pEffectPositionNormal, g_pInputLayoutPositionNormal);
+		g_pTeapot->Draw( g_pEffectPositionNormal,  g_pInputLayoutPositionNormal);
 	}
 
-	void drawModelTemp(Vec3 pos, Vec3 rot, Vec3 scale)
+	void drawMesh(const XMVECTOR pos, const XMVECTOR rot, const XMVECTOR scale)
 	{
-		XMVECTOR posDX = pos.toDirectXVector();
-		XMVECTOR rotDX = rot.toDirectXVector();
-		XMVECTOR scaleDX = scale.toDirectXVector();
+		// Setup position/normal effect (per object variables)
+		XMMATRIX s = XMMatrixScaling(XMVectorGetX(scale), XMVectorGetY(scale), XMVectorGetZ(scale));
+		XMMATRIX t = XMMatrixTranslation(XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
+		XMMATRIX r = XMMatrixRotationRollPitchYaw(XMVectorGetX(rot), XMVectorGetX(rot), XMVectorGetX(rot));
 
-		XMMATRIX s = XMMatrixScaling(XMVectorGetX(scaleDX), XMVectorGetY(scaleDX), XMVectorGetZ(scaleDX));
-		XMMATRIX t = XMMatrixTranslation(XMVectorGetX(posDX), XMVectorGetY(posDX), XMVectorGetZ(posDX));
-		XMMATRIX r = XMMatrixRotationRollPitchYaw(XMVectorGetX(rotDX), XMVectorGetX(rotDX), XMVectorGetX(rotDX));
+		uint16_t index = 0;
+		XMFLOAT3 position = { 100,100,100 };
 
-		auto device = g_ppd3Device;
-		CommonStates states(device);
-		EffectFactory fx(device);
+		g_pMesh->SetVertex(index, position);
+		g_pMesh->UpdateBuffer(g_pd3dImmediateContext);
 
-		// For converting a model: .\meshconvert.exe .\benchy.obj -op -flip -y
-		//auto model = Model::CreateFromSDKMESH(device, L"../benchy.sdkmesh", fx);
-
-		/*for (auto it = model->meshes.cbegin(); it != model->meshes.cend(); ++it)
-		{
-			auto mesh = it->get();
-			assert(mesh != 0);
-			
-			for (auto it = mesh->meshParts.cbegin(); it != mesh->meshParts.cend(); ++it)
-			{
-				auto part = (*it).get();
-				assert(part != 0);
-
-				part->vertexBuffer.
-			}
-		}*/
-
-		// Load model and vertices
-		size_t data_size = 0;
-		std::unique_ptr<uint8_t[]> v_data;
-		HRESULT hr = BinaryReader::ReadEntireFile(L"../benchy.sdkmesh", v_data, &data_size);
-		uint8_t* mesh_data = v_data.get();
-		auto model = DirectX::Model::CreateFromSDKMESH(device, v_data.get(), data_size, fx, false, false);
-		model->name = L"../benchy.sdkmesh";
-		auto v_header = reinterpret_cast<const SDKMESH_HEADER*>(mesh_data);
-		auto vb_array = reinterpret_cast<const SDKMESH_VERTEX_BUFFER_HEADER*>(mesh_data + v_header->VertexStreamHeadersOffset);
-
-		if (v_header->NumVertexBuffers < 1)
-			throw std::exception("Vertex Buffers less than 1");
-		auto& vertex_header = vb_array[0];
-		uint64_t buffer_data_offset = v_header->HeaderSize + v_header->NonBufferDataSize;
-		uint8_t* buffer_data = mesh_data + buffer_data_offset;
-		auto verts_pairs = reinterpret_cast<std::pair<SimpleMath::Vector3, SimpleMath::Vector3>*>(buffer_data + (vertex_header.DataOffset - buffer_data_offset));
-		auto verts = reinterpret_cast<const uint8_t*>(buffer_data + (vertex_header.DataOffset - buffer_data_offset));
-
-		verts_pairs[0].first.x = 100.0f;
-		verts_pairs[1].first.x = 100.0f;
-		auto convertedVertices = reinterpret_cast<const uint8_t*>(verts_pairs);
-
-
-		// New vertex buffer
-		D3D11_BUFFER_DESC desc = {};
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.ByteWidth = static_cast<UINT>(vertex_header.SizeBytes);
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA initData = {};
-		initData.pSysMem = convertedVertices;
-
-
-		for (auto it = model->meshes.cbegin(); it != model->meshes.cend(); ++it)
-		{
-			auto mesh = it->get();
-			assert(mesh != 0);
-
-			for (auto it = mesh->meshParts.cbegin(); it != mesh->meshParts.cend(); ++it)
-			{
-				auto part = (*it).get();
-				assert(part != 0);
-
-				ThrowIfFailed(
-					device->CreateBuffer(&desc, &initData, &part->vertexBuffer)
-				);
-			}
-		}
-		
-
-		//SetDebugObjectName(vbs[j].Get(), "ModelSDKMESH");
-
-
-		// Draw mesh
-		XMMATRIX world = r * s * t * g_camera.GetWorldMatrix();
-		XMMATRIX view = g_camera.GetViewMatrix();
-		XMMATRIX proj = g_camera.GetProjMatrix();
-
-		model->Draw(g_pd3dImmediateContext, states, world, view, proj);
+		g_pEffectPositionNormal->SetWorld(r * s * t * g_camera.GetWorldMatrix());
+		g_pMesh->Draw(g_pEffectPositionNormal, g_pInputLayoutPositionNormal);
 	}
 
 	void drawRigidBody(const XMMATRIX& m_objToWorld)

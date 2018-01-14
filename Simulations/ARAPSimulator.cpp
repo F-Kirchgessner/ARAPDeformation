@@ -113,10 +113,10 @@ void ARAPSimulator::drawSomeRandomObjects()
     }
 }
 
-void ARAPSimulator::drawMovableTeapot()
+void ARAPSimulator::drawMesh()
 {
 	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
-	DUC->drawTeapot(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
+	DUC->drawMesh(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
 }
 
 void ARAPSimulator::drawTriangle()
@@ -128,7 +128,7 @@ void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 {
 	switch(m_iTestCase)
 	{
-	case 0: drawMovableTeapot();break;
+	case 0: drawMesh();break;
 	case 1: drawSomeRandomObjects();break;
 	case 2: drawTriangle();break;
 	}

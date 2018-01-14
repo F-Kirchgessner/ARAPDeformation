@@ -20,7 +20,7 @@ public:
 	void onMouse(int x, int y);
 	// Specific Functions
 	void drawSomeRandomObjects();
-	void drawMovableTeapot();
+	void drawMesh();
 	void drawTriangle();
 
 private:
