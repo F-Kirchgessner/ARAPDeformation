@@ -17,7 +17,6 @@
 #include "CommonStates.h"
 #include "DirectXHelpers.h"
 #include "SharedResourcePool.h"
-#include "Geometry.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
@@ -862,4 +861,12 @@ void GeometricPrimitive::UpdateBuffer(ID3D11DeviceContext* deviceContext) {
 
 	CreateBuffer(device.Get(), this->pImpl->vertices, D3D11_BIND_VERTEX_BUFFER, &this->pImpl->mVertexBuffer);
 	CreateBuffer(device.Get(), this->pImpl->indices, D3D11_BIND_INDEX_BUFFER, &this->pImpl->mIndexBuffer);
+}
+
+VertexCollection GeometricPrimitive::GetVertexList() {
+	return this->pImpl->vertices;
+}
+
+IndexCollection GeometricPrimitive::GetIndexList() {
+	return this->pImpl->indices;
 }

@@ -3,6 +3,10 @@
 
 #include "Simulator.h"
 
+#include "../DirectXTK/Src/Geometry.h"
+#include <map>
+#include <vector>
+
 class ARAPSimulator:public Simulator{
 public:
 	// Construtors
@@ -15,6 +19,8 @@ public:
 	void drawFrame(ID3D11DeviceContext* pd3dImmediateContext);
 	void notifyCaseChanged(int testCase);
 	void externalForcesCalculations(float timeElapsed);
+	void findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neighborList);
+	void insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >* neighborList, uint16_t vertex, uint16_t neighb1, uint16_t neighb2);
 	void simulateTimestep(float timeStep);
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
@@ -36,6 +42,7 @@ private:
 	Point2D m_oldtrackmouse;
 
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
+	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
 };
 
 #endif

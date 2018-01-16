@@ -14,6 +14,7 @@
 #pragma once
 
 #include "VertexTypes.h"
+#include "../Src/Geometry.h"
 
 #include <DirectXColors.h>
 #include <functional>
@@ -67,6 +68,9 @@ namespace DirectX
 
 		void SetVertex(uint16_t index, XMFLOAT3 pos);
 		void UpdateBuffer(ID3D11DeviceContext* deviceContext);
+
+		VertexCollection GetVertexList();
+		IndexCollection GetIndexList();
 
         // Draw the primitive.
         void XM_CALLCONV Draw(FXMMATRIX world, CXMMATRIX view, CXMMATRIX projection, FXMVECTOR color = Colors::White, _In_opt_ ID3D11ShaderResourceView* texture = nullptr, bool wireframe = false,

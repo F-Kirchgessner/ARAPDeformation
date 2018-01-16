@@ -20,6 +20,7 @@ void ARAPSimulator::reset(){
 		m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
 
 		m_pMesh.reset();
+		// TODO Release vertexNeighbours
 }
 
 void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
@@ -27,19 +28,7 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 	this->DUC = DUC;
 	switch (m_iTestCase)
 	{
-	case 0: {
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.1f, false);
-
-		// Test move vertex
-		uint16_t index = 0;
-		XMFLOAT3 newPosition = { 100,100,100 };
-		m_pMesh->SetVertex(index, newPosition);
-
-		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
-
-		break;
-	}
+	case 0: break;
 	case 1:
 		TwAddVarRW(DUC->g_pTweakBar, "Num Spheres", TW_TYPE_INT32, &m_iNumSpheres, "min=1");
 		TwAddVarRW(DUC->g_pTweakBar, "Sphere Size", TW_TYPE_FLOAT, &m_fSphereSize, "min=0.01 step=0.01");
@@ -56,7 +45,18 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
-		//m_model = &DeformableModel(L"../benchy.sdkmesh", DUC);
+		
+		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.1f, false);
+		findNeighbours(&vertexNeighbours);
+
+		// Test move vertex
+		uint16_t index = 0;
+		XMFLOAT3 newPosition = { 100,100,100 };
+		m_pMesh->SetVertex(index, newPosition);
+
+		// Update vertex buffer do display changes
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+
 		break;
 	}
 	case 1:
@@ -94,6 +94,42 @@ void ARAPSimulator::externalForcesCalculations(float timeElapsed)
 		m_vfMovableObjectFinalPos = m_vfMovableObjectPos;
 	}
 }
+
+
+void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neighborList) {
+	VertexCollection vertices = m_pMesh->GetVertexList();
+	IndexCollection indices = m_pMesh->GetIndexList();
+
+	for (uint16_t idx = 0; idx < indices.size(); idx += 3) {
+		insertVertexNeighbors(neighborList, indices[idx], indices[idx + 1], indices[idx + 2]);
+		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
+		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
+	}
+}
+
+
+void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >* neighborList, uint16_t vertex, uint16_t neighb1, uint16_t neighb2) {
+	map<uint16_t, vector<uint16_t>* >::iterator iter = neighborList->find(vertex);
+
+	// Not present
+	if (iter == neighborList->end()) {
+		vector<uint16_t>* neighbors = new vector<uint16_t>();
+		neighbors->push_back(neighb1);
+		neighbors->push_back(neighb2);
+		neighborList->insert(pair<uint16_t, vector<uint16_t>* >(vertex, neighbors));
+	}
+	// Exists already
+	else {
+		vector<uint16_t>* neighbors = iter->second;
+		if (std::find(neighbors->begin(), neighbors->end(), neighb1) == neighbors->end()) {
+			neighbors->push_back(neighb1);
+		}
+		if (std::find(neighbors->begin(), neighbors->end(), neighb2) == neighbors->end()) {
+			neighbors->push_back(neighb2);
+		}
+	}
+}
+
 
 void ARAPSimulator::simulateTimestep(float timeStep)
 {
