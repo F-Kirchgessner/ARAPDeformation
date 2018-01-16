@@ -18,6 +18,8 @@ void ARAPSimulator::reset(){
 		m_mouse.x = m_mouse.y = 0;
 		m_trackmouse.x = m_trackmouse.y = 0;
 		m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
+
+		m_pMesh.reset();
 }
 
 void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
@@ -25,7 +27,19 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 	this->DUC = DUC;
 	switch (m_iTestCase)
 	{
-	case 0:break;
+	case 0: {
+		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.1f, false);
+
+		// Test move vertex
+		uint16_t index = 0;
+		XMFLOAT3 newPosition = { 100,100,100 };
+		m_pMesh->SetVertex(index, newPosition);
+
+		// Update vertex buffer do display changes
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+
+		break;
+	}
 	case 1:
 		TwAddVarRW(DUC->g_pTweakBar, "Num Spheres", TW_TYPE_INT32, &m_iNumSpheres, "min=1");
 		TwAddVarRW(DUC->g_pTweakBar, "Sphere Size", TW_TYPE_FLOAT, &m_fSphereSize, "min=0.01 step=0.01");
@@ -116,7 +130,7 @@ void ARAPSimulator::drawSomeRandomObjects()
 void ARAPSimulator::drawMesh()
 {
 	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
-	DUC->drawMesh(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
+	drawMesh(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
 }
 
 void ARAPSimulator::drawTriangle()
@@ -146,4 +160,19 @@ void ARAPSimulator::onMouse(int x, int y)
 	m_oldtrackmouse.y = y;
 	m_trackmouse.x = x;
 	m_trackmouse.y = y;
+}
+
+void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
+{
+	XMVECTOR posXM = pos.toDirectXVector();
+	XMVECTOR rotXM = rot.toDirectXVector();
+	XMVECTOR scaleXM = scale.toDirectXVector();
+
+	// Setup position/normal effect (per object variables)
+	XMMATRIX s = XMMatrixScaling(XMVectorGetX(scaleXM), XMVectorGetY(scaleXM), XMVectorGetZ(scaleXM));
+	XMMATRIX t = XMMatrixTranslation(XMVectorGetX(posXM), XMVectorGetY(posXM), XMVectorGetZ(posXM));
+	XMMATRIX r = XMMatrixRotationRollPitchYaw(XMVectorGetX(rotXM), XMVectorGetX(rotXM), XMVectorGetX(rotXM));
+
+	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
+	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
 }

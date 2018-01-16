@@ -20,8 +20,9 @@ public:
 	void onMouse(int x, int y);
 	// Specific Functions
 	void drawSomeRandomObjects();
-	void drawMesh();
 	void drawTriangle();
+	void drawMesh();
+	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
 
 private:
 	// Attributes
@@ -33,6 +34,8 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
+
+	std::unique_ptr<GeometricPrimitive> m_pMesh;
 };
 
 #endif
