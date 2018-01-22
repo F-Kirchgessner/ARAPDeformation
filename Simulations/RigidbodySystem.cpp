@@ -65,7 +65,7 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 void RigidbodySystem::simulateTimestep(float timeStep) {
 	timeStep *= m_timeFactor;
 
-	//integrate(timeStep);
+	integrate(timeStep);
 	checkForCollisions();
 	for (auto& rigidbodySystem : m_rigidbodies) {
 		rigidbodySystem.updateStep(timeStep);
@@ -131,7 +131,7 @@ void RigidbodySystem::collisionDetected(Rigidbody &bodyA, Rigidbody &bodyB, Vec3
 
 }
 
-/*
+
 void RigidbodySystem::integrate(float elapsedTime) {
 	switch (m_iIntegrator) {
 		//euler
@@ -140,8 +140,8 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			spring.computeElasticForces();
 			spring.addToEndPoints();
 		}
-
-		for (auto &masspoint : m_masspointList) {
+		/*
+		for (auto &masspoint : m_rigidbodies) {
 			masspoint.integrateVelocityEuler(elapsedTime);
 			masspoint.integratePositionsEuler(elapsedTime);
 		}
@@ -150,8 +150,9 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			masspoint.clearForce();
 			masspoint.addGravity(m_fGravity);
 		}
+		*/
 		break;
-
+		/*
 		//leapfrog
 	case 1:
 		for (auto& spring : m_springList) {
@@ -234,9 +235,10 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			masspoint.addGravity(m_fGravity / 2);
 		}
 		break;
+		*/
 	}
 }
-*/
+
 
 // ExtraFunctions
 int RigidbodySystem::getNumberOfRigidBodies() {

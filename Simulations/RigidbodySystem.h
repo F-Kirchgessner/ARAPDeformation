@@ -31,7 +31,7 @@ public:
 	Vec3 getLinearVelocityOfRigidBody(int i);
 	Vec3 getAngularVelocityOfRigidBody(int i);
 	void applyForceOnBody(int i, Vec3 loc, Vec3 force);
-	//void integrate(float elapsedTime);
+	void integrate(float elapsedTime);
 	void addRigidBody(Vec3 position, Vec3 size, float mass);
 	void addSpring(int masspoint1, int masspoint2, float initialLength);
 	void setOrientationOf(int i, Quat orientation);
@@ -54,7 +54,8 @@ private:
 	float m_elasticity;
 	float m_fGravity;
 	float m_timeFactor;
-	int m_iIntegrator;
+	int m_iIntegrator = EULER;
 	float m_fStiffness;
 	float m_fDamping;
+
 };
