@@ -232,7 +232,7 @@ void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateCont
 	DUC->beginLine();
 	for (auto& spring : m_springList) {
 		float springForce = spring.force.squaredDistanceTo(Vec3(0, 0, 0));
-		DUC->drawLine(spring.mass_point1->position, Vec3(0, 1 - springForce, springForce), spring.mass_point2->position, Vec3(0, 1 - springForce, springForce));
+		DUC->drawLine(spring.mass_point1->m_position, Vec3(0, 1 - springForce, springForce), spring.mass_point2->m_position, Vec3(0, 1 - springForce, springForce));
 	}
 	DUC->endLine();
 
