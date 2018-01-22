@@ -4,7 +4,7 @@ Spring::Spring(){
 }
 
 
-Spring::Spring(RigidbodySystem& point1, RigidbodySystem& point2, float stiffness, float initialLength){
+Spring::Spring(Rigidbody& point1, Rigidbody& point2, float stiffness, float initialLength){
 	Vec3 force = Vec3(0, 0, 0);
 	mass_point1 = &point1;
 	mass_point2 = &point2;
