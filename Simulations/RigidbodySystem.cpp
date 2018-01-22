@@ -6,8 +6,8 @@ RigidbodySystem::RigidbodySystem()
 	m_elasticity = 10.0f;
 	m_timeFactor = 10;
 	m_fStiffness = 10.0f;
-	m_fDampingVel = 0.95f;
-	m_fDampingRot = 0.95f;
+	m_fDampingVel = 1.0f;
+	m_fDampingRot = 1.0f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
 }
@@ -24,8 +24,8 @@ void RigidbodySystem::initTestScene()
 	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, true);
 	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 2.0f, false);
 
-	addRigidBody(Vec3(0.0f, 0.0f, -2.0f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 100.0f));
+	addRigidBody(Vec3(0.0f, 0.0f, -1.0f), Vec3(0.2f, 0.2f, 0.2f), 1.0f, false);
+	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 
 	addSpring(0, 2, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.05f);
 	addSpring(1, 2, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.05f);

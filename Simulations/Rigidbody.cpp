@@ -51,12 +51,14 @@ void Rigidbody::updateStep(float elapsedTime)
 		Mat4 rotMatTranspose = rotation;
 		rotMatTranspose.transpose();
 
-			m_position += h * velocity * dampingVel;
-			velocity += h * (force / mass);
-			angularMomentum += h * torque;
+			m_position += h * velocity;
+			//velocity += h * (force / mass);
+			//angularMomentum += h * torque;
+			velocity += h * ((force - dampingVel * velocity) / mass);
+			angularMomentum += h * (torque - dampingRot * angularMomentum);
 
 		Mat4 tempInteriatensor = rotation * interiatensorInv * rotMatTranspose;
-		angluarvelocity = tempInteriatensor * angularMomentum  * dampingRot;
+		angluarvelocity = tempInteriatensor * angularMomentum;
 
 		orientation += h / 2.0f * Quat(angluarvelocity.x, angluarvelocity.y, angluarvelocity.z,0) * orientation;
 		orientation = orientation.unit();
