@@ -46,6 +46,7 @@ public:
 	Vec3 torque;
 	//L
 	Vec3 angularMomentum;
+	
 	bool isFixed;
 
 	// add Force and Torque, External Forces in the Simulation Algo.
@@ -54,9 +55,6 @@ public:
 	void calculateInteriaTensor();
 	void clearForce();
 	void addGravity(float gravityAccel);
-
-	void setIsFixed(bool isFixed);
-	bool getIsFixed();
 
 	float red;
 	float green;

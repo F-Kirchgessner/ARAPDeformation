@@ -26,10 +26,8 @@ void RigidbodySystem::initTestScene()
 	addRigidBody(Vec3(0.0f, 0.0f, -2.0f), Vec3(0.2f, 0.2f, 0.2f), 1.0f, true);
 	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, 0.1f), Vec3(0, 0, 100.0));
 
-	//applyForceOnBody(getNumberOfRigidBodies() - 2, Vec3(-0.25f, 0.0f, 0), Vec3(5, 0, 0));
-
-	addSpring(0, 2, 0.05f);
-	addSpring(1, 2, 0.05f);
+	addSpring(0, 2, Vec3(0, 0, 0), Vec3(0, 0, 0), 0.05f);
+	addSpring(1, 2, Vec3(0, 0, 0), Vec3(0, 0, 0), 0.05f);
 }
 
 
@@ -138,9 +136,6 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			spring.computeElasticForces();
 			spring.addToEndPoints();
 		}
-		for (auto &masspoint : m_rigidbodies) {
-			masspoint.addGravity(m_fGravity);
-		}
 	}
 }
 
@@ -183,8 +178,8 @@ void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool is
 }
 
 
-void RigidbodySystem::addSpring(int masspoint1, int masspoint2, float initialLength) {
-	Spring s(m_rigidbodies.at(masspoint1), m_rigidbodies.at(masspoint2), m_fStiffness, initialLength);
+void RigidbodySystem::addSpring(int masspoint1, int masspoint2, Vec3 pos1, Vec3 pos2, float initialLength) {
+	Spring s(m_rigidbodies.at(masspoint1), m_rigidbodies.at(masspoint2), pos1, pos2, m_fStiffness, initialLength);
 	m_springList.push_back(s);
 }
 
