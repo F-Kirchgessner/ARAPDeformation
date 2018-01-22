@@ -1,4 +1,5 @@
 #include "ARAPSimulator.h"
+#include "MassSpringSystemSimulator.h"
 
 ARAPSimulator::ARAPSimulator()
 {
