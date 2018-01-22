@@ -9,7 +9,7 @@ class Rigidbody
 {
 public:
 	Rigidbody();
-	Rigidbody(Vec3 size, Vec3 position, float mass, float damping, bool isFixed);
+	Rigidbody(Vec3 size, Vec3 position, float mass, float dampingVel, float dampingRot, bool isFixed);
 	~Rigidbody();
 
 	// x_cm
@@ -30,7 +30,8 @@ public:
 	
 	Mat4 Obj2WorldMatrix;
 
-	float damping;
+	float dampingVel;
+	float dampingRot;
 	//M
 	float mass;
 	//i

@@ -6,7 +6,8 @@ RigidbodySystem::RigidbodySystem()
 	m_elasticity = 10.0f;
 	m_timeFactor = 10;
 	m_fStiffness = 10.0f;
-	m_fDamping = 0.01f;
+	m_fDampingVel = 0.95f;
+	m_fDampingRot = 0.95f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
 }
@@ -19,15 +20,15 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, false);
-	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, false);
-	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 2.0f, true);
+	addRigidBody(Vec3(-0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, true);
+	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, true);
+	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 2.0f, false);
 
-	addRigidBody(Vec3(0.0f, 0.0f, -2.0f), Vec3(0.2f, 0.2f, 0.2f), 1.0f, true);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, 0.1f), Vec3(0, 0, 100.0));
+	addRigidBody(Vec3(0.0f, 0.0f, -2.0f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
+	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 100.0f));
 
-	addSpring(0, 2, Vec3(0, 0, 0), Vec3(0, 0, 0), 0.05f);
-	addSpring(1, 2, Vec3(0, 0, 0), Vec3(0, 0, 0), 0.05f);
+	addSpring(0, 2, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.05f);
+	addSpring(1, 2, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.05f);
 }
 
 
@@ -52,7 +53,7 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 	DUC->beginLine();
 	for (auto& spring : m_springList) {
 		float springForce = spring.force.squaredDistanceTo(Vec3(0, 0, 0));
-		DUC->drawLine(spring.mass_point1->m_position, Vec3(0, 1 - springForce, springForce), spring.mass_point2->m_position, Vec3(0, 1 - springForce, springForce));
+		DUC->drawLine(spring.mass_point1->m_position + spring.pos1, Vec3(0, 1 - springForce, springForce), spring.mass_point2->m_position + spring.pos2, Vec3(0, 1 - springForce, springForce));
 	}
 	DUC->endLine();
 }
@@ -136,6 +137,10 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			spring.computeElasticForces();
 			spring.addToEndPoints();
 		}
+
+		for (auto& masspoint : m_rigidbodies) {
+			masspoint.addGravity(m_fGravity);
+		}
 	}
 }
 
@@ -167,7 +172,7 @@ void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 
 
 void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool isFixed) {
-	Rigidbody rig(size, position, mass, m_fDamping, isFixed);
+	Rigidbody rig(size, position, mass, m_fDampingVel, m_fDampingRot, isFixed);
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	rig.red = dis(gen);

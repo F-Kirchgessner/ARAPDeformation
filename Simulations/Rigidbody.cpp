@@ -7,7 +7,7 @@ Rigidbody::Rigidbody()
 
 }
 
-Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, float damping, bool fixed) : size(size), m_position(position), mass(mass), damping(damping), isFixed(fixed)
+Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, float dampingVel, float dampingRot, bool fixed) : size(size), m_position(position), mass(mass), dampingVel(dampingVel), dampingRot(dampingRot), isFixed(fixed)
 {
 	// 45 deg. 
 	// need to be removed
@@ -45,25 +45,27 @@ void Rigidbody::applyForce(Vec3& loc, Vec3& f)
 
 void Rigidbody::updateStep(float elapsedTime)
 {
-	float h = elapsedTime;
-	Mat4 rotation = orientation.getRotMat();
-	Mat4 rotMatTranspose = rotation;
-	rotMatTranspose.transpose();
+	if (!isFixed) {
+		float h = elapsedTime;
+		Mat4 rotation = orientation.getRotMat();
+		Mat4 rotMatTranspose = rotation;
+		rotMatTranspose.transpose();
 
-		m_position += h * velocity * damping;
-		velocity += h * (force / mass);
-		angularMomentum += h * torque;
+			m_position += h * velocity * dampingVel;
+			velocity += h * (force / mass);
+			angularMomentum += h * torque;
 
-	Mat4 tempInteriatensor = rotation * interiatensorInv * rotMatTranspose;
-	angluarvelocity = tempInteriatensor *angularMomentum;
+		Mat4 tempInteriatensor = rotation * interiatensorInv * rotMatTranspose;
+		angluarvelocity = tempInteriatensor * angularMomentum  * dampingRot;
 
-	orientation += h / 2.0f * Quat(angluarvelocity.x, angluarvelocity.y, angluarvelocity.z,0) * orientation;
-	orientation = orientation.unit();
+		orientation += h / 2.0f * Quat(angluarvelocity.x, angluarvelocity.y, angluarvelocity.z,0) * orientation;
+		orientation = orientation.unit();
 
-	transMat.initTranslation(m_position.x, m_position.y, m_position.z);
-	rotMat = orientation.getRotMat();
+		transMat.initTranslation(m_position.x, m_position.y, m_position.z);
+		rotMat = orientation.getRotMat();
 
-	clearForce();
+		clearForce();
+	}
 }
 
 void Rigidbody::clearForce() {

@@ -56,6 +56,7 @@ private:
 	float m_timeFactor;
 	int m_iIntegrator = EULER;
 	float m_fStiffness;
-	float m_fDamping;
+	float m_fDampingVel;
+	float m_fDampingRot;
 
 };
