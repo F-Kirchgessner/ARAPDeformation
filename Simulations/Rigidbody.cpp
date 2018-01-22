@@ -91,3 +91,7 @@ void Rigidbody::calculateInteriaTensor() {
 					     0.0f, 0.0f, (mass*(w*w + h*h))/12.0f, 0.0f,
 						 0.0f, 0.0f, 0.0f, 1.0f);
 };
+
+void Rigidbody::addGravity(float gravityAccel) {
+	force.y -= mass * gravityAccel;
+}

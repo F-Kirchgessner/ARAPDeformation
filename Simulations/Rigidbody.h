@@ -51,6 +51,7 @@ public:
 	void updateStep(float elapsedTime);
 	void calculateInteriaTensor();
 	void clearForce();
+	void addGravity(float gravityAccel);
 
 	float red;
 	float green;
