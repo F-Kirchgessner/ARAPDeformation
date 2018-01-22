@@ -7,7 +7,7 @@ Rigidbody::Rigidbody()
 
 }
 
-Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, bool fixed) : size(size), m_position(position), mass(mass), isFixed(fixed)
+Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, float damping, bool fixed) : size(size), m_position(position), mass(mass), damping(damping), isFixed(fixed)
 {
 	// 45 deg. 
 	// need to be removed
@@ -51,7 +51,7 @@ void Rigidbody::updateStep(float elapsedTime)
 		Mat4 rotMatTranspose = rotation;
 		rotMatTranspose.transpose();
 
-		m_position += h * velocity;
+		m_position += h * velocity * damping;
 		velocity += h * (force / mass);
 		angularMomentum += h * torque;
 
