@@ -2,6 +2,7 @@
 #define ARAPSIMULATOR_h
 
 #include "Simulator.h"
+#include "RigidbodySystem.h"
 
 #include "../DirectXTK/Src/Geometry.h"
 #include <map>
@@ -25,13 +26,12 @@ public:
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 	// Specific Functions
-	void drawSomeRandomObjects();
-	void drawTriangle();
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
 
 private:
 	// Attributes
+	RigidbodySystem* m_RigidbodySystem;
 	Vec3  m_vfMovableObjectPos;
 	Vec3  m_vfMovableObjectFinalPos;
 	Vec3  m_vfRotate;

@@ -35,17 +35,17 @@ void RigidbodySystem::initTestScene()
 
 
 void RigidbodySystem::reset() {
-	m_rigidbodysystems.clear();
+	m_rigidbodies.clear();
 	m_springList.clear();
 
 	initTestScene();
 }
 
 
-void RigidBodySystemSimulator::drawObjects(ID3D11DeviceContext* pd3dImmediateContext) {
+void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, DrawingUtilitiesClass* DUC) {
 
 	// Draw rigid bodies
-	for (auto& rigidbodySystem : m_rigidbodysystems) {
+	for (auto& rigidbodySystem : m_rigidbodies) {
 		DUC->setUpLighting(Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue));
 		rigidbodySystem.Obj2WorldMatrix = rigidbodySystem.scaleMat * rigidbodySystem.rotMat * rigidbodySystem.transMat;
 		DUC->drawRigidBody(rigidbodySystem.Obj2WorldMatrix);
@@ -64,10 +64,9 @@ void RigidBodySystemSimulator::drawObjects(ID3D11DeviceContext* pd3dImmediateCon
 void RigidbodySystem::simulateTimestep(float timeStep) {
 	timeStep *= m_timeFactor;
 
-	if (DXUTIsKeyDown(VK_LBUTTON))
-		pullTogether();
+	integrate(timeStep);
 	checkForCollisions();
-	for (auto& rigidbodySystem : m_rigidbodysystems) {
+	for (auto& rigidbodySystem : m_rigidbodies) {
 		rigidbodySystem.updateStep(timeStep);
 	}
 	break;
@@ -75,10 +74,10 @@ void RigidbodySystem::simulateTimestep(float timeStep) {
 
 
 void RigidbodySystem::checkForCollisions() {
-	for (int a = 0; a < m_rigidbodysystems.size(); a++) {
-		for (int b = a + 1; b < m_rigidbodysystems.size(); b++) {
-			RigidbodySystem &bodyA = m_rigidbodysystems[a];
-			RigidbodySystem &bodyB = m_rigidbodysystems[b];
+	for (int a = 0; a < m_rigidbodies.size(); a++) {
+		for (int b = a + 1; b < m_rigidbodies.size(); b++) {
+			Rigidbody &bodyA = m_rigidbodies[a];
+			Rigidbody &bodyB = m_rigidbodies[b];
 			Mat4 worldA = bodyA.scaleMat * bodyA.rotMat * bodyA.transMat;
 			Mat4 worldB = bodyB.scaleMat * bodyB.rotMat * bodyB.transMat;
 			CollisionInfo simpletest = checkCollisionSAT(worldA, worldB);
@@ -241,27 +240,27 @@ void RigidbodySystem::integrate(float elapsedTime) {
 
 // ExtraFunctions
 int RigidbodySystem::getNumberOfRigidBodies() {
-	return m_rigidbodysystems.size();
+	return m_rigidbodies.size();
 }
 
 
 Vec3 RigidbodySystem::getPositionOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).m_position;
+	return m_rigidbodies.at(i).m_position;
 }
 
 
 Vec3 RigidbodySystem::getLinearVelocityOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).velocity;
+	return m_rigidbodies.at(i).velocity;
 }
 
 
 Vec3 RigidbodySystem::getAngularVelocityOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).angluarvelocity;
+	return m_rigidbodies.at(i).angluarvelocity;
 }
 
 
 void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
-	m_rigidbodysystems.at(i).applyForce(loc, force);
+	m_rigidbodies.at(i).applyForce(loc, force);
 }
 
 
@@ -273,7 +272,7 @@ void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass) {
 	rig.green = dis(gen);
 	rig.blue = dis(gen);
 	//create; copy; delete; because of inner function, maybe emplace_back?
-	m_rigidbodysystems.push_back(rig);
+	m_rigidbodies.push_back(rig);
 }
 
 
@@ -290,15 +289,15 @@ void RigidbodySystem::setOrientationOf(int i, Quat orientation) {
 
 
 void RigidbodySystem::setVelocityOf(int i, Vec3 velocity) {
-	m_rigidbodysystems.at(i).velocity = velocity;
+	m_rigidbodies.at(i).velocity = velocity;
 }
 
 
 void RigidbodySystem::pullTogether() {
-	for (int i = 0; i < m_rigidbodysystems.size() - 1; ++i)
+	for (int i = 0; i < m_rigidbodies.size() - 1; ++i)
 	{
-		Vec3 vel = m_rigidbodysystems[i + 1].m_position - m_rigidbodysystems[i].m_position;
-		m_rigidbodysystems[i].velocity = vel * 0.1f;
-		m_rigidbodysystems[i + 1].velocity = vel * -0.1f;
+		Vec3 vel = m_rigidbodies[i + 1].m_position - m_rigidbodies[i].m_position;
+		m_rigidbodies[i].velocity = vel * 0.1f;
+		m_rigidbodies[i + 1].velocity = vel * -0.1f;
 	}
 }

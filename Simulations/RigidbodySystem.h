@@ -1,5 +1,10 @@
-#pragma once
-#include "Simulator.h"
+#ifndef RIGIDBODYSYSTEM_H
+#define RIGIDBODYSYSTEM_H
+
+#include "global.h"
+#include "Rigidbody.h"
+#include "Spring.h"
+
 #include "util\matrixbase.h"
 
 #include <DirectXMath.h>
@@ -17,8 +22,10 @@ public:
 
 	// Functions
 	void reset();
+	void simulateTimestep(float timeStep);
 	void checkForCollisions();
 	void collisionDetected(RigidbodySystem &bodyA, RigidbodySystem &bodyB, Vec3 collisionPointWorld, Vec3 normalWorld);
+	void drawObjects(ID3D11DeviceContext* pd3dImmediateContext, DrawingUtilitiesClass* DUC);
 
 	// ExtraFunctions
 	int getNumberOfRigidBodies();
@@ -35,7 +42,7 @@ public:
 
 	void initTestScene();
 
-	std::vector<RigidbodySystem> m_rigidbodies;
+	std::vector<Rigidbody> m_rigidbodies;
 	std::vector<Spring> m_springList;
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 
