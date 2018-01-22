@@ -33,7 +33,7 @@ public:
 	void applyForceOnBody(int i, Vec3 loc, Vec3 force);
 	void integrate(float elapsedTime);
 	void addRigidBody(Vec3 position, Vec3 size, float mass);
-	void addSpring(int masspoint1, int masspoint2, float initialLength);
+	void addSpring(int masspoint1, int masspoint2, Vec3 pos1, Vec3 pos2, float initialLength);
 	void setOrientationOf(int i, Quat orientation);
 	void setVelocityOf(int i, Vec3 velocity);
 	//void pullTogether();

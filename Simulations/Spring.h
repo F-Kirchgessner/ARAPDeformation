@@ -7,7 +7,7 @@ class Spring
 {
 public:
 	Spring();
-	Spring(Rigidbody& point1, Rigidbody& point2, float stiffness, float initialLength);
+	Spring(Rigidbody& point1, Rigidbody& point2, Vec3& pos1, Vec3& pos2, float stiffness, float initialLength);
 	~Spring();
 
 public:
@@ -17,6 +17,9 @@ public:
 	float initialLength;
 	float currentLength;
 	Vec3 force;
+
+	Vec3 pos1;
+	Vec3 pos2;
 
 	float calcDirectedForce(float currentLength, float pos1, float pos2);
 	void computeElasticForces();
