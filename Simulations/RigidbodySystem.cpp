@@ -19,12 +19,15 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 0.0f, 0.0f), Vec3(0.25f, 0.25f, 0.25f), 2.0f);
-	addRigidBody(Vec3(0.3f, 0.0f, 0.0f), Vec3(0.25f, 0.25f, 0.25f), 2.0f);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(-0.25f, 0.0f, 0), Vec3(-5, 0.5, 0.5));
-	applyForceOnBody(getNumberOfRigidBodies() - 2, Vec3(-0.25f, 0.0f, 0), Vec3(5, 0, 0));
+	addRigidBody(Vec3(-0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f);
+	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f);
+	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 3.0f);
 
-	addSpring(0, 1, 0.25f);
+	//applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(-0.25f, 0.0f, 0), Vec3(-5, 0.5, 0.5));
+	//applyForceOnBody(getNumberOfRigidBodies() - 2, Vec3(-0.25f, 0.0f, 0), Vec3(5, 0, 0));
+
+	addSpring(0, 2, 0.1f);
+	addSpring(1, 2, 0.1f);
 }
 
 
