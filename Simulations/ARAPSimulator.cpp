@@ -63,7 +63,7 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	}
 	case 1:
 		cout << "Physics Objects!\n";
-		m_RigidbodySystem.reset();
+		m_RigidbodySystem->reset();
 		break;
 	default:
 		cout << "Empty Test!\n";

@@ -7,7 +7,7 @@ RigidbodySystem::RigidbodySystem()
 	m_timeFactor = 10;
 	m_fStiffness = 25.0f;
 	m_fDamping = 0.01f;
-	m_fGravityAccel = 9.81f;
+	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
 }
 
@@ -56,7 +56,7 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 	DUC->beginLine();
 	for (auto& spring : m_springList) {
 		float springForce = spring.force.squaredDistanceTo(Vec3(0, 0, 0));
-		DUC->drawLine(spring.mass_point1->position, Vec3(0, 1 - springForce, springForce), spring.mass_point2->position, Vec3(0, 1 - springForce, springForce));
+		DUC->drawLine(spring.mass_point1->m_position, Vec3(0, 1 - springForce, springForce), spring.mass_point2->m_position, Vec3(0, 1 - springForce, springForce));
 	}
 	DUC->endLine();
 }
@@ -65,12 +65,11 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 void RigidbodySystem::simulateTimestep(float timeStep) {
 	timeStep *= m_timeFactor;
 
-	integrate(timeStep);
+	//integrate(timeStep);
 	checkForCollisions();
 	for (auto& rigidbodySystem : m_rigidbodies) {
 		rigidbodySystem.updateStep(timeStep);
 	}
-	break;
 }
 
 
@@ -149,7 +148,7 @@ void RigidbodySystem::integrate(float elapsedTime) {
 
 		for (auto& masspoint : m_masspointList) {
 			masspoint.clearForce();
-			masspoint.addGravity(m_fGravityAccel);
+			masspoint.addGravity(m_fGravity);
 		}
 		break;
 
@@ -174,7 +173,7 @@ void RigidbodySystem::integrate(float elapsedTime) {
 
 		for (auto& masspoint : m_masspointList) {
 			masspoint.clearForce();
-			masspoint.addGravity(m_fGravityAccel);
+			masspoint.addGravity(m_fGravity);
 		}
 		break;
 
@@ -211,7 +210,7 @@ void RigidbodySystem::integrate(float elapsedTime) {
 		// Compute a at t+h based on xtmp and vtmp
 		for (auto& masspoint : m_masspointList) {
 			masspoint.setForce(inputForce);
-			masspoint.addGravity(m_fGravityAccel / 2);
+			masspoint.addGravity(m_fGravity / 2);
 		}
 
 		for (auto& spring : m_springList) {
@@ -232,7 +231,7 @@ void RigidbodySystem::integrate(float elapsedTime) {
 
 		for (auto& masspoint : m_masspointList) {
 			masspoint.clearForce();
-			masspoint.addGravity(m_fGravityAccel / 2);
+			masspoint.addGravity(m_fGravity / 2);
 		}
 		break;
 	}

@@ -52,7 +52,7 @@ private:
 	// RigidBodySystem * m_pRigidBodySystem; 
 	Vec3 m_externalForce;
 	float m_elasticity;
-	float m_gravity;
+	float m_fGravity;
 	float m_timeFactor;
 	int m_iIntegrator;
 	float m_fStiffness;
