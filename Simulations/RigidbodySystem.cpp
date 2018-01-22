@@ -24,18 +24,19 @@ void RigidbodySystem::initTestScene()
 	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(-0.25f, 0.0f, 0), Vec3(-5, 0.5, 0.5));
 	applyForceOnBody(getNumberOfRigidBodies() - 2, Vec3(-0.25f, 0.0f, 0), Vec3(5, 0, 0));
 
+	addSpring(0, 1, 0.25f);
+
 	/*
 	addMassPoint(Vec3(0.0f, 0.5f, 0), Vec3(0.0, 0.0, 0), true);
 	addMassPoint(Vec3(0.2f, 0.3f, 0), Vec3(0.0, 0.0, 0), false);
 	addMassPoint(Vec3(0.4f, 0.4f, 0), Vec3(0.0, 0.0, 0), false);
-	addSpring(8, 9, 0.25f);
 	addSpring(9, 10, 0.25f);
 	*/
 }
 
 
 void RigidbodySystem::reset() {
-	m_rigidbodysystems.clear();
+	m_rigidbodies.clear();
 	m_springList.clear();
 
 	initTestScene();
@@ -75,10 +76,10 @@ void RigidbodySystem::simulateTimestep(float timeStep) {
 
 
 void RigidbodySystem::checkForCollisions() {
-	for (int a = 0; a < m_rigidbodysystems.size(); a++) {
-		for (int b = a + 1; b < m_rigidbodysystems.size(); b++) {
-			RigidbodySystem &bodyA = m_rigidbodysystems[a];
-			RigidbodySystem &bodyB = m_rigidbodysystems[b];
+	for (int a = 0; a < m_rigidbodies.size(); a++) {
+		for (int b = a + 1; b < m_rigidbodies.size(); b++) {
+			Rigidbody &bodyA = m_rigidbodies[a];
+			Rigidbody &bodyB = m_rigidbodies[b];
 			Mat4 worldA = bodyA.scaleMat * bodyA.rotMat * bodyA.transMat;
 			Mat4 worldB = bodyB.scaleMat * bodyB.rotMat * bodyB.transMat;
 			CollisionInfo simpletest = checkCollisionSAT(worldA, worldB);
@@ -92,7 +93,7 @@ void RigidbodySystem::checkForCollisions() {
 }
 
 
-void RigidbodySystem::collisionDetected(RigidbodySystem &bodyA, RigidbodySystem &bodyB, Vec3 collisionPointWorld, Vec3 normalWorld) {
+void RigidbodySystem::collisionDetected(Rigidbody &bodyA, Rigidbody &bodyB, Vec3 collisionPointWorld, Vec3 normalWorld) {
 	Vec3 collisionPointA = collisionPointWorld - bodyA.m_position;
 	Vec3 collisionPointB = collisionPointWorld - bodyB.m_position;
 	//------------------------------------------------------------------------------------------------
@@ -132,7 +133,7 @@ void RigidbodySystem::collisionDetected(RigidbodySystem &bodyA, RigidbodySystem 
 
 }
 
-
+/*
 void RigidbodySystem::integrate(float elapsedTime) {
 	switch (m_iIntegrator) {
 		//euler
@@ -237,48 +238,48 @@ void RigidbodySystem::integrate(float elapsedTime) {
 		break;
 	}
 }
-
+*/
 
 // ExtraFunctions
 int RigidbodySystem::getNumberOfRigidBodies() {
-	return m_rigidbodysystems.size();
+	return m_rigidbodies.size();
 }
 
 
 Vec3 RigidbodySystem::getPositionOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).m_position;
+	return m_rigidbodies.at(i).m_position;
 }
 
 
 Vec3 RigidbodySystem::getLinearVelocityOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).velocity;
+	return m_rigidbodies.at(i).velocity;
 }
 
 
 Vec3 RigidbodySystem::getAngularVelocityOfRigidBody(int i) {
-	return m_rigidbodysystems.at(i).angluarvelocity;
+	return m_rigidbodies.at(i).angluarvelocity;
 }
 
 
 void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
-	m_rigidbodysystems.at(i).applyForce(loc, force);
+	m_rigidbodies.at(i).applyForce(loc, force);
 }
 
 
 void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass) {
-	RigidbodySystem rig(size, position, mass);
+	Rigidbody rig(size, position, mass);
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	rig.red = dis(gen);
 	rig.green = dis(gen);
 	rig.blue = dis(gen);
 	//create; copy; delete; because of inner function, maybe emplace_back?
-	m_rigidbodysystems.push_back(rig);
+	m_rigidbodies.push_back(rig);
 }
 
 
 void RigidbodySystem::addSpring(int masspoint1, int masspoint2, float initialLength) {
-	Spring s(m_masspointList.at(masspoint1), m_masspointList.at(masspoint2), m_fStiffness, initialLength);
+	Spring s(m_rigidbodies.at(masspoint1), m_rigidbodies.at(masspoint2), m_fStiffness, initialLength);
 	m_springList.push_back(s);
 }
 
@@ -290,10 +291,10 @@ void RigidbodySystem::setOrientationOf(int i, Quat orientation) {
 
 
 void RigidbodySystem::setVelocityOf(int i, Vec3 velocity) {
-	m_rigidbodysystems.at(i).velocity = velocity;
+	m_rigidbodies.at(i).velocity = velocity;
 }
 
-
+/*
 void RigidbodySystem::pullTogether() {
 	for (int i = 0; i < m_rigidbodysystems.size() - 1; ++i)
 	{
@@ -302,3 +303,4 @@ void RigidbodySystem::pullTogether() {
 		m_rigidbodysystems[i + 1].velocity = vel * -0.1f;
 	}
 }
+*/
