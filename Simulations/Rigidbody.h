@@ -9,7 +9,7 @@ class Rigidbody
 {
 public:
 	Rigidbody();
-	Rigidbody(Vec3 size, Vec3 position, float mass);
+	Rigidbody(Vec3 size, Vec3 position, float mass, float damping, bool isFixed);
 	~Rigidbody();
 
 	// x_cm
@@ -30,6 +30,7 @@ public:
 	
 	Mat4 Obj2WorldMatrix;
 
+	float damping;
 	//M
 	float mass;
 	//i
@@ -45,6 +46,8 @@ public:
 	Vec3 torque;
 	//L
 	Vec3 angularMomentum;
+	
+	bool isFixed;
 
 	// add Force and Torque, External Forces in the Simulation Algo.
 	void applyForce(Vec3& loc, Vec3& f);

@@ -3,9 +3,9 @@
 
 RigidbodySystem::RigidbodySystem()
 {
-	m_elasticity = 0.1;
+	m_elasticity = 0.1f;
 	m_timeFactor = 10;
-	m_fStiffness = 1.0f;
+	m_fStiffness = 0.1f;
 	m_fDamping = 0.01f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
@@ -19,19 +19,16 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 0.0f, 0.0f), Vec3(0.25f, 0.25f, 0.25f), 2.0f);
-	addRigidBody(Vec3(0.3f, 0.0f, 0.0f), Vec3(0.25f, 0.25f, 0.25f), 2.0f);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(-0.25f, 0.0f, 0), Vec3(-5, 0.5, 0.5));
-	applyForceOnBody(getNumberOfRigidBodies() - 2, Vec3(-0.25f, 0.0f, 0), Vec3(5, 0, 0));
+	addRigidBody(Vec3(-0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, false);
+	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 1.0f, false);
+	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 2.0f, true);
 
 	addSpring(0, 1,Vec3(-5,0,0), Vec3(+5,0,0), 0.25f);
 
-	/*
-	addMassPoint(Vec3(0.0f, 0.5f, 0), Vec3(0.0, 0.0, 0), true);
-	addMassPoint(Vec3(0.2f, 0.3f, 0), Vec3(0.0, 0.0, 0), false);
-	addMassPoint(Vec3(0.4f, 0.4f, 0), Vec3(0.0, 0.0, 0), false);
-	addSpring(9, 10, 0.25f);
-	*/
+	addSpring(0, 2, Vec3(0,0,0), Vec3(0,0,0), 0.1f);
+	addSpring(1, 2, Vec3(0,0,0), Vec3(0,0,0), 0.1f);
+	addSpring(0, 2, Vec3(0,0,0), Vec3(0,0,0), 0.5f);
+	addSpring(1, 2, Vec3(0,0,0), Vec3(0,0,0), 0.5f);
 }
 
 
@@ -140,102 +137,6 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			spring.computeElasticForces();
 			spring.addToEndPoints();
 		}
-		/*
-		for (auto &masspoint : m_rigidbodies) {
-			masspoint.integrateVelocityEuler(elapsedTime);
-			masspoint.integratePositionsEuler(elapsedTime);
-		}
-
-		for (auto& masspoint : m_masspointList) {
-			masspoint.clearForce();
-			masspoint.addGravity(m_fGravity);
-		}
-		*/
-		break;
-		/*
-		//leapfrog
-	case 1:
-		for (auto& spring : m_springList) {
-			spring.computeElasticForces();
-			spring.addToEndPoints();
-		}
-
-		if (init) {
-			for (auto &masspoint : m_masspointList) {
-				masspoint.initVelocity(elapsedTime / 2);
-			}
-		}
-		init = false;
-
-		for (auto &masspoint : m_masspointList) {
-			masspoint.integrateVelocityLeapfrog(elapsedTime);
-			masspoint.integratePositionsLeapfrog(elapsedTime);
-		}
-
-		for (auto& masspoint : m_masspointList) {
-			masspoint.clearForce();
-			masspoint.addGravity(m_fGravity);
-		}
-		break;
-
-		//midpoint
-	case 2:
-		std::vector<Vec3> PosTemp;
-		std::vector<Vec3> VelTemp;
-		std::vector<Vec3> oldPos;
-		std::vector<Vec3> oldVel;
-		Vec3 inputForce;
-		if (m_masspointList.size() > 0)
-			inputForce = m_masspointList[0].getForce();
-
-		// Compute a(t)
-		for (auto& spring : m_springList) {
-			spring.computeElasticForces();
-			spring.addToEndPoints();
-		}
-
-		// Compute xtmp at t+h/2 based on v(t)
-		for (auto &massspoint : m_masspointList) {
-			massspoint.integrateMidpointPosTemp(elapsedTime / 2, PosTemp);
-		}
-
-		// Compute vtmp at t+h/2 based on a(t)
-		for (auto &massspoint : m_masspointList) {
-			massspoint.integrateMidpointVelTemp(elapsedTime / 2, VelTemp);
-		}
-
-		for (unsigned int i = 0; i < m_masspointList.size(); i++) {
-			m_masspointList[i].integrateSwitch(VelTemp, PosTemp, oldVel, oldPos, i);
-		}
-
-		// Compute a at t+h based on xtmp and vtmp
-		for (auto& masspoint : m_masspointList) {
-			masspoint.setForce(inputForce);
-			masspoint.addGravity(m_fGravity / 2);
-		}
-
-		for (auto& spring : m_springList) {
-			spring.computeElasticForces();
-			spring.addToEndPoints();
-		}
-
-		for (unsigned int i = 0; i < m_masspointList.size(); i++) {
-			m_masspointList[i].integrateSwitchBack(oldVel, oldPos, i);
-		}
-
-		// Compute x at t+h
-		// Compute v at t+h
-		for (unsigned int i = 0; i < m_masspointList.size(); i++) {
-			m_masspointList[i].computeX(elapsedTime, VelTemp, i);
-			m_masspointList[i].computeY(elapsedTime, VelTemp, i);
-		}
-
-		for (auto& masspoint : m_masspointList) {
-			masspoint.clearForce();
-			masspoint.addGravity(m_fGravity / 2);
-		}
-		break;
-		*/
 	}
 }
 
@@ -266,8 +167,8 @@ void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 }
 
 
-void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass) {
-	Rigidbody rig(size, position, mass);
+void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool isFixed) {
+	Rigidbody rig(size, position, mass, m_fDamping, isFixed);
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	rig.red = dis(gen);
