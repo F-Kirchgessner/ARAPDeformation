@@ -3,9 +3,9 @@
 
 RigidbodySystem::RigidbodySystem()
 {
-	m_elasticity = 0.5;
+	m_elasticity = 0.2;
 	m_timeFactor = 10;
-	m_fStiffness = 25.0f;
+	m_fStiffness = 0.5f;
 	m_fDamping = 0.01f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
@@ -140,6 +140,10 @@ void RigidbodySystem::integrate(float elapsedTime) {
 			spring.computeElasticForces();
 			spring.addToEndPoints();
 		}
+		for (auto& masspoint : m_rigidbodies) {
+			masspoint.clearForce();
+			masspoint.addGravity(m_fGravity);
+		}
 		/*
 		for (auto &masspoint : m_rigidbodies) {
 			masspoint.integrateVelocityEuler(elapsedTime);
@@ -266,8 +270,8 @@ void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 }
 
 
-void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass) {
-	Rigidbody rig(size, position, mass);
+void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool isFixed) {
+	Rigidbody rig(size, position, mass, isFixed);
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	rig.red = dis(gen);
