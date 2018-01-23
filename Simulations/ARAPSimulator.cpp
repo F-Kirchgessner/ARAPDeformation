@@ -1,4 +1,5 @@
 #include "ARAPSimulator.h"
+#include "MassSpringSystemSimulator.h"
 
 ARAPSimulator::ARAPSimulator()
 {
@@ -8,10 +9,12 @@ ARAPSimulator::ARAPSimulator()
 	m_vfRotate = Vec3();
 	m_iNumSpheres    = 100;
 	m_fSphereSize    = 0.05f;
+
+	m_RigidbodySystem = new RigidbodySystem();
 }
 
 const char * ARAPSimulator::getTestCasesStr(){
-	return "Teapot,Random Objects,Triangle";
+	return "Basic Mesh,Physics Objects";
 }
 
 void ARAPSimulator::reset(){
@@ -30,10 +33,9 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 	{
 	case 0: break;
 	case 1:
-		TwAddVarRW(DUC->g_pTweakBar, "Num Spheres", TW_TYPE_INT32, &m_iNumSpheres, "min=1");
-		TwAddVarRW(DUC->g_pTweakBar, "Sphere Size", TW_TYPE_FLOAT, &m_fSphereSize, "min=0.01 step=0.01");
+		//TwAddVarRW(DUC->g_pTweakBar, "Elasticity", TW_TYPE_FLOAT, &m_elasticity, "step=0.1 min=0.0");
+		//TwAddVarRW(DUC->g_pTweakBar, "Timefactor", TW_TYPE_FLOAT, &m_timeFactor, "step=0.1 min=1.0");
 		break;
-	case 2:break;
 	default:break;
 	}
 }
@@ -60,12 +62,8 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		break;
 	}
 	case 1:
-		cout << "Random Object!\n";
-		m_iNumSpheres = 100;
-		m_fSphereSize = 0.05f;
-		break;
-	case 2:
-		cout << "Triangle !\n";
+		cout << "Physics Objects!\n";
+		m_RigidbodySystem->reset();
 		break;
 	default:
 		cout << "Empty Test!\n";
@@ -144,34 +142,14 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 		if (m_vfRotate.y > 2 * M_PI) m_vfRotate.y -= 2.0f * (float)M_PI;
 		m_vfRotate.z += timeStep;
 		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;*/
-
 		break;
+
+	case 1:
+		m_RigidbodySystem->simulateTimestep(timeStep);
+
 	default:
 		break;
 	}
-}
-
-void ARAPSimulator::drawSomeRandomObjects()
-{
-    std::mt19937 eng;
-    std::uniform_real_distribution<float> randCol( 0.0f, 1.0f);
-    std::uniform_real_distribution<float> randPos(-0.5f, 0.5f);
-    for (int i=0; i<m_iNumSpheres; i++)
-    {
-		DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(randCol(eng),randCol(eng), randCol(eng)));
-		DUC->drawSphere(Vec3(randPos(eng),randPos(eng),randPos(eng)),Vec3(m_fSphereSize, m_fSphereSize, m_fSphereSize));
-    }
-}
-
-void ARAPSimulator::drawMesh()
-{
-	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
-	drawMesh(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
-}
-
-void ARAPSimulator::drawTriangle()
-{
-	DUC->DrawTriangleUsingShaders();
 }
 
 void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
@@ -179,23 +157,14 @@ void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	switch(m_iTestCase)
 	{
 	case 0: drawMesh();break;
-	case 1: drawSomeRandomObjects();break;
-	case 2: drawTriangle();break;
+	case 1: m_RigidbodySystem->drawObjects(pd3dImmediateContext, DUC);break;
 	}
 }
 
-void ARAPSimulator::onClick(int x, int y)
+void ARAPSimulator::drawMesh()
 {
-	m_trackmouse.x = x;
-	m_trackmouse.y = y;
-}
-
-void ARAPSimulator::onMouse(int x, int y)
-{
-	m_oldtrackmouse.x = x;
-	m_oldtrackmouse.y = y;
-	m_trackmouse.x = x;
-	m_trackmouse.y = y;
+	DUC->setUpLighting(Vec3(), 0.4*Vec3(1, 1, 1), 100, 0.6*Vec3(0.97, 0.86, 1));
+	drawMesh(m_vfMovableObjectPos, m_vfRotate, Vec3(0.5, 0.5, 0.5));
 }
 
 void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
@@ -211,4 +180,18 @@ void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
 
 	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
 	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
+}
+
+void ARAPSimulator::onClick(int x, int y)
+{
+	m_trackmouse.x = x;
+	m_trackmouse.y = y;
+}
+
+void ARAPSimulator::onMouse(int x, int y)
+{
+	m_oldtrackmouse.x = x;
+	m_oldtrackmouse.y = y;
+	m_trackmouse.x = x;
+	m_trackmouse.y = y;
 }
