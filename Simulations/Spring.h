@@ -18,6 +18,8 @@ public:
 	float currentLength;
 	Vec3 force;
 
+	Vec3 posOrig1;
+	Vec3 posOrig2;
 	Vec3 pos1;
 	Vec3 pos2;
 

@@ -8,6 +8,8 @@ Spring::Spring(Rigidbody& point1, Rigidbody& point2, Vec3& pos1, Vec3& pos2, flo
 	Vec3 force = Vec3(0, 0, 0);
 	mass_point1 = &point1;
 	mass_point2 = &point2;
+	this->posOrig1 = pos1;
+	this->posOrig2 = pos2;
 	this->pos1 = pos1;
 	this->pos2 = pos2;
 	this->stiffness = stiffness;
@@ -27,10 +29,10 @@ float Spring::calcDirectedForce(float currentLength, float pos1, float pos2) {
 
 
 void Spring::computeElasticForces() {
-
-	Vec3 tmpPos1 = mass_point1->m_position - pos1;
-	Vec3 tmpPos2 = mass_point2->m_position - pos2;
-
+	pos1 = mass_point1->rotMat.transformVector(posOrig1);
+	pos2 = mass_point2->rotMat.transformVector(posOrig2);
+	Vec3 tmpPos1 = mass_point1->m_position + pos1;
+	Vec3 tmpPos2 = mass_point2->m_position + pos2;
 
 	float currentLength = sqrt(tmpPos1.squaredDistanceTo(tmpPos2));
 	if (currentLength < SPRING_LENGTH_MIN)
@@ -44,8 +46,8 @@ void Spring::computeElasticForces() {
 }
 
 void Spring::addToEndPoints() {
-	mass_point1->applyForce(pos1,force);
-	mass_point2->applyForce(pos2,-force);
+	mass_point1->applyForce(posOrig1,force);
+	mass_point2->applyForce(posOrig2,-force);
 }
 
 void Spring::setStiffness(float stiff) {
