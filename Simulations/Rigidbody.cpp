@@ -54,8 +54,8 @@ void Rigidbody::updateStep(float elapsedTime)
 			m_position += h * velocity;
 			//velocity += h * (force / mass);
 			//angularMomentum += h * torque;
-			velocity += h * ((force - dampingVel * velocity) / mass);
-			angularMomentum += h * (torque - dampingRot * angularMomentum);
+			velocity += h * ((force - dampingVel * velocity * elapsedTime) / mass);
+			angularMomentum += h * (torque - dampingRot * angularMomentum * elapsedTime);
 
 		Mat4 tempInteriatensor = rotation * interiatensorInv * rotMatTranspose;
 		angluarvelocity = tempInteriatensor * angularMomentum;
