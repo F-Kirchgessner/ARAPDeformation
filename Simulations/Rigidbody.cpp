@@ -37,9 +37,9 @@ void Rigidbody::applyForce(Vec3& loc, Vec3& f)
 	force += f;
 	//loc is probably in world space as m_position
 	// armvector = x - loc
-	Vec3 armVector = loc - m_position;
+	//Vec3 armVector = loc - m_position;
 	//Watch out should be += not =
-	torque += GamePhysics::cross(armVector,f);
+	torque += GamePhysics::cross(loc, f);
 
 }
 
@@ -54,11 +54,12 @@ void Rigidbody::updateStep(float elapsedTime)
 			m_position += h * velocity;
 			//velocity += h * (force / mass);
 			//angularMomentum += h * torque;
-			velocity += h * ((force - dampingVel * velocity * elapsedTime) / mass);
-			angularMomentum += h * (torque - dampingRot * angularMomentum * elapsedTime);
+			velocity += h * ((force - dampingVel * velocity) / mass);
+			angularMomentum += h * (torque * 0.5 - dampingRot * angularMomentum);
 
 		Mat4 tempInteriatensor = rotation * interiatensorInv * rotMatTranspose;
-		angluarvelocity = tempInteriatensor * angularMomentum;
+		//angluarvelocity = tempInteriatensor * angularMomentum;
+		angluarvelocity = tempInteriatensor.transformVector(angularMomentum);
 
 		orientation += h / 2.0f * Quat(angluarvelocity.x, angluarvelocity.y, angluarvelocity.z,0) * orientation;
 		orientation = orientation.unit();

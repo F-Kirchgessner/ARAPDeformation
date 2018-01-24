@@ -46,8 +46,8 @@ void Spring::computeElasticForces() {
 }
 
 void Spring::addToEndPoints() {
-	mass_point1->applyForce(mass_point1->m_position,force);
-	mass_point2->applyForce(mass_point2->m_position,-force);
+	mass_point1->applyForce(posOrig1,force);
+	mass_point2->applyForce(posOrig2,-force);
 }
 
 void Spring::setStiffness(float stiff) {

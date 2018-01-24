@@ -3,11 +3,11 @@
 
 RigidbodySystem::RigidbodySystem()
 {
-	m_elasticity = 0.5f;
+	m_elasticity = 1.0f;
 	m_timeFactor = 1.0f;
-	m_fStiffness = 10.0f;
-	m_fDampingVel = 0.02f;
-	m_fDampingRot = 0.02f;
+	m_fStiffness = 6.0f;
+	m_fDampingVel = 0.1f;
+	m_fDampingRot = 1.0f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
 }
@@ -20,20 +20,18 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
-	addRigidBody(Vec3(0.6f, 1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
-	addRigidBody(Vec3(-0.6f, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
-	addRigidBody(Vec3(0.6f, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
+	addRigidBody(Vec3(-0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
+	addRigidBody(Vec3(0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
+	addRigidBody(Vec3(0, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
 
 	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false);
 
-	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.2f, false);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 1000.0f));
+	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
+	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 
-	addSpring(0, 4, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.1f);
-	addSpring(1, 4, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.1f);
-	addSpring(2, 4, Vec3(0, 0, 0), Vec3(-0.3f, -0.25f, 0), 0.5f);
-	addSpring(3, 4, Vec3(0, 0, 0), Vec3(0.3f, -0.25f, 0), 0.5f);
+	addSpring(0, 3, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.4f);
+	addSpring(1, 3, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.4f);
+	//addSpring(2, 3, Vec3(0, 0, 0), Vec3(0, -0.25f, 0), 0.4f);
 }
 
 
@@ -80,13 +78,15 @@ void RigidbodySystem::checkForCollisions() {
 		for (int b = a + 1; b < m_rigidbodies.size(); b++) {
 			Rigidbody &bodyA = m_rigidbodies[a];
 			Rigidbody &bodyB = m_rigidbodies[b];
-			Mat4 worldA = bodyA.scaleMat * bodyA.rotMat * bodyA.transMat;
-			Mat4 worldB = bodyB.scaleMat * bodyB.rotMat * bodyB.transMat;
-			CollisionInfo simpletest = checkCollisionSAT(worldA, worldB);
-			if (simpletest.isValid) {
-				//std::printf("collision detected at normal: %f, %f, %f\n", simpletest.normalWorld.x, simpletest.normalWorld.y, simpletest.normalWorld.z);
-				//std::printf("collision point : %f, %f, %f\n", (simpletest.collisionPointWorld).x, (simpletest.collisionPointWorld).y, (simpletest.collisionPointWorld).z);
-				collisionDetected(bodyA, bodyB, simpletest.collisionPointWorld, simpletest.normalWorld);
+			if (!bodyA.isFixed && !bodyB.isFixed) {
+				Mat4 worldA = bodyA.scaleMat * bodyA.rotMat * bodyA.transMat;
+				Mat4 worldB = bodyB.scaleMat * bodyB.rotMat * bodyB.transMat;
+				CollisionInfo simpletest = checkCollisionSAT(worldA, worldB);
+				if (simpletest.isValid) {
+					//std::printf("collision detected at normal: %f, %f, %f\n", simpletest.normalWorld.x, simpletest.normalWorld.y, simpletest.normalWorld.z);
+					//std::printf("collision point : %f, %f, %f\n", (simpletest.collisionPointWorld).x, (simpletest.collisionPointWorld).y, (simpletest.collisionPointWorld).z);
+					collisionDetected(bodyA, bodyB, simpletest.collisionPointWorld, simpletest.normalWorld);
+				}
 			}
 		}
 	}
