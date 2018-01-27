@@ -6,6 +6,9 @@
 #include "../DirectXTK/Src/Geometry.h"
 #include <map>
 #include <vector>
+#include<fstream>
+#include <sstream>
+#include <string>
 
 class ARAPSimulator:public Simulator{
 public:
@@ -30,6 +33,9 @@ public:
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
 	void newskeletondata();
+
+	void parseConfigFile();
+	uint16_t skeleton_vertices[20];
 
 private:
 	// Attributes

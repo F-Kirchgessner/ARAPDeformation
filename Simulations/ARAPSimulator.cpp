@@ -14,6 +14,10 @@ ARAPSimulator::ARAPSimulator()
 	m_fSphereSize = 0.05f;
 	kinect = new KinectSensor();
 	handle_vertex = 10;
+
+	//create an array containing the vertices that correspond to each skeleton joint
+	parseConfigFile();
+
 }
 
 const char * ARAPSimulator::getTestCasesStr() {
@@ -145,12 +149,42 @@ void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >
 	}
 }
 
+void ARAPSimulator::parseConfigFile() {
+
+	std::ifstream infile("C:\\Users\\pti\\Downloads\\3d\\project\\ARAPKinect\\ARAP\\Simulations\\skeleton_config.txt");
+	std::string line;
+	//uint16_t skeleton_vertices[20];
+
+	if (infile.is_open())
+	{
+		int i = 0;
+
+		while (std::getline(infile, line) || i<20) //only 20 skeleton joints, if there are more lines do not process them
+		{
+			auto delimiterPos = line.find(":");
+			auto name = line.substr(0, delimiterPos);
+			auto value = line.substr(delimiterPos + 1);
+			//std::cout << "name: " << name << std::endl;
+			skeleton_vertices[i] = atoi(value.c_str()); //assign to each skeleton joint the assosiate 
+			//std::cout << "name: " << i << " ";
+			//std::cout << "value: " << skeleton_vertices[i] << std::endl;
+			i++;
+		}
+		infile.close();
+	}
+	else {
+		std::cout << "Unable to open config file." << '\n';
+	}
+	//return skeleton_vertices[20];
+
+}
+
+
 void ARAPSimulator::newskeletondata()
 {
 
-
 	auto vertices_list = m_pMesh->GetVertexList();
-	std::cout << "number of vertices " << vertices_list.size() << std::endl;
+	//std::cout << "number of vertices " << vertices_list.size() << std::endl;
 	XMFLOAT3 newPosition;
 
 	/*
