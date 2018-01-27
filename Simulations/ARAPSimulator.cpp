@@ -1,8 +1,8 @@
 #include "ARAPSimulator.h"
-
 #include "KinectSensor.h"
-KinectSensor *kinect;
+#include "MassSpringSystemSimulator.h"
 
+KinectSensor *kinect;
 
 ARAPSimulator::ARAPSimulator()
 {
