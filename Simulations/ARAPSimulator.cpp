@@ -1,6 +1,6 @@
 #include "ARAPSimulator.h"
 #include "MassSpringSystemSimulator.h"
-
+//change
 ARAPSimulator::ARAPSimulator()
 {
 	m_iTestCase = 0;
