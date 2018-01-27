@@ -18,7 +18,6 @@ public:
 	NUI_SKELETON_FRAME GetSkeletonframe();
 
 	HRESULT createFirstConnected();
-	
 
 private:
 	INuiSensor * m_pNuiSensor;

@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -227,20 +227,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ARAPSimulator.cpp" />
-    <ClCompile Include="Rigidbody.cpp" />
-    <ClCompile Include="RigidbodySystem.cpp" />
-    <ClCompile Include="Spring.cpp" />
+    <ClCompile Include="KinectSensor.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawingUtilitiesClass.h" />
-    <ClInclude Include="global.h" />
-    <ClInclude Include="Rigidbody.h" />
-    <ClInclude Include="RigidbodySystem.h" />
+    <ClInclude Include="KinectSensor.h" />
     <ClInclude Include="Simulator.h" />
     <ClInclude Include="ARAPSimulator.h" />
-    <ClInclude Include="Spring.h" />
     <ClInclude Include="util\FFmpeg.h" />
     <ClInclude Include="util\matrixbase.h" />
     <ClInclude Include="util\quaternion.h" />

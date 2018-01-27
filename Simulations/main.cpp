@@ -24,10 +24,12 @@ using namespace GamePhysics;
 
 #ifdef TEMPLATE_DEMO
 #include "ARAPSimulator.h"
+#include "KinectSensor.h"
 #endif
 
 DrawingUtilitiesClass * g_pDUC;
 Simulator * g_pSimulator;
+//KinectSensor * kinect;
 float 	g_fTimestep = 0.001;
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
@@ -227,6 +229,9 @@ LRESULT CALLBACK MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
 //--------------------------------------------------------------------------------------
 void CALLBACK OnFrameMove( double dTime, float fElapsedTime, void* pUserContext )
 {
+	//gets the skeleton joint coordinates for each frame
+	//kinect->ProcessSkeleton();
+
 	UpdateWindowTitle(L"Demo");
 	g_pDUC->update(fElapsedTime);
 	if (g_iPreTestCase != g_iTestCase){// test case changed
@@ -347,6 +352,7 @@ int main(int argc, char* argv[])
 
 
 #ifdef TEMPLATE_DEMO
+	//kinect = new KinectSensor();
 	g_pSimulator= new ARAPSimulator();
 #endif
 	g_pSimulator->reset();
