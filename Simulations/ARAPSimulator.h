@@ -2,7 +2,6 @@
 #define ARAPSIMULATOR_h
 
 #include "Simulator.h"
-#include "RigidbodySystem.h"
 
 #include "../DirectXTK/Src/Geometry.h"
 #include <map>
@@ -26,12 +25,14 @@ public:
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 	// Specific Functions
+	void drawSomeRandomObjects();
+	void drawTriangle();
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
+	void newskeletondata();
 
 private:
 	// Attributes
-	RigidbodySystem* m_RigidbodySystem;
 	Vec3  m_vfMovableObjectPos;
 	Vec3  m_vfMovableObjectFinalPos;
 	Vec3  m_vfRotate;
@@ -43,6 +44,8 @@ private:
 
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
+	uint16_t handle_vertex;
+	
 };
 
 #endif

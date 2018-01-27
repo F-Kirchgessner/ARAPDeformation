@@ -1,5 +1,8 @@
 #include "ARAPSimulator.h"
-#include "MassSpringSystemSimulator.h"
+
+#include "KinectSensor.h"
+KinectSensor *kinect;
+
 
 ARAPSimulator::ARAPSimulator()
 {
@@ -9,12 +12,12 @@ ARAPSimulator::ARAPSimulator()
 	m_vfRotate = Vec3();
 	m_iNumSpheres    = 100;
 	m_fSphereSize    = 0.05f;
-
-	m_RigidbodySystem = new RigidbodySystem();
+	kinect = new KinectSensor();
+	handle_vertex = 10;
 }
 
 const char * ARAPSimulator::getTestCasesStr(){
-	return "Basic Mesh,Physics Objects";
+	return "Teapot,Random Objects,Triangle";
 }
 
 void ARAPSimulator::reset(){
@@ -33,9 +36,10 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 	{
 	case 0: break;
 	case 1:
-		//TwAddVarRW(DUC->g_pTweakBar, "Elasticity", TW_TYPE_FLOAT, &m_elasticity, "step=0.1 min=0.0");
-		//TwAddVarRW(DUC->g_pTweakBar, "Timefactor", TW_TYPE_FLOAT, &m_timeFactor, "step=0.1 min=1.0");
+		TwAddVarRW(DUC->g_pTweakBar, "Num Spheres", TW_TYPE_INT32, &m_iNumSpheres, "min=1");
+		TwAddVarRW(DUC->g_pTweakBar, "Sphere Size", TW_TYPE_FLOAT, &m_fSphereSize, "min=0.01 step=0.01");
 		break;
+	case 2:break;
 	default:break;
 	}
 }
@@ -51,19 +55,32 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.1f, false);
 		findNeighbours(&vertexNeighbours);
 
+		//kinect = new KinectSensor();
+		//kinect->Update();
+
+		//kinect->ProcessSkeleton();
+
 		// Test move vertex
-		uint16_t index = 0;
-		XMFLOAT3 newPosition = { 100,100,100 };
-		m_pMesh->SetVertex(index, newPosition);
+		//uint16_t index = 0;
+		//XMFLOAT3 newPosition = { 50,50,50 };
+		//m_pMesh->SetVertex(index, newPosition);
+		//index = 10;
+		//newPosition = { 100,100,100 };
+		//m_pMesh->SetVertex(index, newPosition);
+
 
 		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		//m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 
 		break;
 	}
 	case 1:
-		cout << "Physics Objects!\n";
-		m_RigidbodySystem->reset();
+		cout << "Random Object!\n";
+		m_iNumSpheres = 100;
+		m_fSphereSize = 0.05f;
+		break;
+	case 2:
+		cout << "Triangle !\n";
 		break;
 	default:
 		cout << "Empty Test!\n";
@@ -128,6 +145,105 @@ void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >
 	}
 }
 
+void ARAPSimulator::newskeletondata()
+{
+
+	
+	auto vertices_list= m_pMesh->GetVertexList();
+	std::cout << "number of vertices " << vertices_list.size() << std::endl;
+	XMFLOAT3 newPosition;
+
+	/*
+	float step = .0035;
+	for (int i = 0; i < vertices_list.size(); i++)
+	{
+		
+		//extract the old coordinates
+		newPosition = { vertices_list[i].position.x ,vertices_list[i].position.y,vertices_list[i].position.z+ step };
+		//change only the z value
+
+		//assign the vertiex back to the model
+
+		m_pMesh->SetVertex(i, newPosition);
+
+	}
+	
+	*/
+	
+	
+	//code to move the handles
+	NUI_SKELETON_FRAME skeletonFrame;
+	skeletonFrame = kinect->GetSkeletonframe();
+
+	for (int i = 0; i < 6; i++) //Six times, because the Kinect has space to track six people
+	{
+
+		NUI_SKELETON_TRACKING_STATE trackingState = skeletonFrame.SkeletonData[i].eTrackingState;
+		//std::cout << "ProcessSkeleton" << std::endl;
+
+		if (NUI_SKELETON_TRACKED == trackingState) {
+		//Print "Right hand:"
+			std::cout << "ProcessSkeleton = " << i << std::endl;
+			XMFLOAT3 newPosition;
+			newPosition.x = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].x * 2;
+			newPosition.y = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y * 2;
+			newPosition.z = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z * 2;
+
+			std::cout << "Right Hand: ";
+			std::cout << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
+			uint16_t handlearray[] = { 49,17,172 };
+				for (int i = 0; i < 3; i++)
+				{
+
+					for (handle_vertex = 0; handle_vertex < 6; handle_vertex++)
+					{
+						m_pMesh->SetVertex(handlearray[i]+handle_vertex, newPosition);
+					}
+				}
+
+	
+		}
+	}
+	
+	
+
+	/*
+	NUI_SKELETON_FRAME skeletonFrame;
+	skeletonFrame = kinect->GetSkeletonframe();
+
+	for (int i = 0; i < 6; i++) //Six times, because the Kinect has space to track six people
+	{
+		
+		NUI_SKELETON_TRACKING_STATE trackingState = skeletonFrame.SkeletonData[i].eTrackingState;
+		//std::cout << "ProcessSkeleton" << std::endl;
+
+		if (NUI_SKELETON_TRACKED == trackingState) {
+			//Print "Right hand:"
+			std::cout << "ProcessSkeleton = " << i << std::endl;
+			XMFLOAT3 newPosition;
+			newPosition.x = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].x * 2;
+			newPosition.y = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y * 2;
+			newPosition.z = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z * 2;
+
+			std::cout << "Right Hand: ";
+			std::cout << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
+			uint16_t handlearray[] = { 49,17,172 };
+			for (int i = 0; i < 3; i++)
+			{
+			
+				for (handle_vertex = 0; handle_vertex < 6; handle_vertex++)
+					m_pMesh->SetVertex(handlearray[i]+handle_vertex, newPosition);
+		
+
+			}
+			
+			m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+			
+		}
+	}
+	*/
+	m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+}
 
 void ARAPSimulator::simulateTimestep(float timeStep)
 {
@@ -135,6 +251,9 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 	switch (m_iTestCase)
 	{// handling different cases
 	case 0:
+		
+		newskeletondata();
+		//kinect->ProcessSkeleton();
 		// rotate the teapot
 		/*m_vfRotate.x += timeStep;
 		if (m_vfRotate.x > 2 * M_PI) m_vfRotate.x -= 2.0f * (float)M_PI;
@@ -142,14 +261,34 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 		if (m_vfRotate.y > 2 * M_PI) m_vfRotate.y -= 2.0f * (float)M_PI;
 		m_vfRotate.z += timeStep;
 		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;*/
+
 		break;
-
-	case 1:
-		m_RigidbodySystem->simulateTimestep(timeStep);
-
 	default:
 		break;
 	}
+}
+
+void ARAPSimulator::drawSomeRandomObjects()
+{
+    std::mt19937 eng;
+    std::uniform_real_distribution<float> randCol( 0.0f, 1.0f);
+    std::uniform_real_distribution<float> randPos(-0.5f, 0.5f);
+    for (int i=0; i<m_iNumSpheres; i++)
+    {
+		DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(randCol(eng),randCol(eng), randCol(eng)));
+		DUC->drawSphere(Vec3(randPos(eng),randPos(eng),randPos(eng)),Vec3(m_fSphereSize, m_fSphereSize, m_fSphereSize));
+    }
+}
+
+void ARAPSimulator::drawMesh()
+{
+	DUC->setUpLighting(Vec3(),0.4*Vec3(1,1,1),100,0.6*Vec3(0.97,0.86,1));
+	drawMesh(m_vfMovableObjectPos,m_vfRotate,Vec3(0.5,0.5,0.5));
+}
+
+void ARAPSimulator::drawTriangle()
+{
+	DUC->DrawTriangleUsingShaders();
 }
 
 void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
@@ -157,14 +296,23 @@ void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	switch(m_iTestCase)
 	{
 	case 0: drawMesh();break;
-	case 1: m_RigidbodySystem->drawObjects(pd3dImmediateContext, DUC);break;
+	case 1: drawSomeRandomObjects();break;
+	case 2: drawTriangle();break;
 	}
 }
 
-void ARAPSimulator::drawMesh()
+void ARAPSimulator::onClick(int x, int y)
 {
-	DUC->setUpLighting(Vec3(), 0.4*Vec3(1, 1, 1), 100, 0.6*Vec3(0.97, 0.86, 1));
-	drawMesh(m_vfMovableObjectPos, m_vfRotate, Vec3(0.5, 0.5, 0.5));
+	m_trackmouse.x = x;
+	m_trackmouse.y = y;
+}
+
+void ARAPSimulator::onMouse(int x, int y)
+{
+	m_oldtrackmouse.x = x;
+	m_oldtrackmouse.y = y;
+	m_trackmouse.x = x;
+	m_trackmouse.y = y;
 }
 
 void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
@@ -180,18 +328,4 @@ void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
 
 	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
 	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
-}
-
-void ARAPSimulator::onClick(int x, int y)
-{
-	m_trackmouse.x = x;
-	m_trackmouse.y = y;
-}
-
-void ARAPSimulator::onMouse(int x, int y)
-{
-	m_oldtrackmouse.x = x;
-	m_oldtrackmouse.y = y;
-	m_trackmouse.x = x;
-	m_trackmouse.y = y;
 }
