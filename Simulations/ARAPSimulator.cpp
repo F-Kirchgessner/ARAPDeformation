@@ -171,7 +171,7 @@ void ARAPSimulator::newskeletondata()
 	*/
 
 
-	//code to move the handles
+	//code to move the handles or move the wings 
 	NUI_SKELETON_FRAME skeletonFrame;
 	skeletonFrame = kinect->GetSkeletonframe();
 
@@ -184,26 +184,45 @@ void ARAPSimulator::newskeletondata()
 		if (NUI_SKELETON_TRACKED == trackingState) {
 			//Print "Right hand:"
 			std::cout << "ProcessSkeleton = " << i << std::endl;
-			XMFLOAT3 newPosition;
-			newPosition.x = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].x * 2;
-			newPosition.y = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y * 2;
-			newPosition.z = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z * 2;
+			XMFLOAT3 newKinectPostion;
+			newKinectPostion.x = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].x * 2;
+			newKinectPostion.y = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y * 2;
+			newKinectPostion.z = skeletonFrame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z * 2;
 
 			std::cout << "Right Hand: ";
-			std::cout << newPosition.x << " " << newPosition.y << " " << newPosition.z << std::endl;
+			std::cout << newKinectPostion.x << " " << newKinectPostion.y << " " << newKinectPostion.z << std::endl;
 			uint16_t handlearray[] = { 49,17,172 };
-			for (int i = 0; i < 3; i++)
+			int mesh_index;
+
+			//code to move the flap the butterfly 
+			for (int j = 0; j < 3; j++)
 			{
 
 				for (handle_vertex = 0; handle_vertex < 6; handle_vertex++)
-				{
-					m_pMesh->SetVertex(handlearray[i] + handle_vertex, newPosition);
+				{ 
+					mesh_index = handlearray[j] + handle_vertex;
+
+					newPosition = { newKinectPostion.x ,newKinectPostion.y,newKinectPostion.z };
+
+					//newPosition = { vertices_list[mesh_index].position.x ,newKinectPostion.y,vertices_list[mesh_index].position.z };
+					m_pMesh->SetVertex(mesh_index, newPosition);
 				}
 			}
 
+			////code to move the whole butterfly
+			/*
+			for (handle_vertex = 0; handle_vertex < 6; handle_vertex++)
+			{
+				mesh_index = handlearray[j] + handle_vertex;
+
+				newPosition = { vertices_list[mesh_index].position.x ,newKinectPostion.y,vertices_list[mesh_index].position.z };
+				m_pMesh->SetVertex(mesh_index, newPosition);
+			}
+			*/
 
 		}
 	}
+	
 
 
 
