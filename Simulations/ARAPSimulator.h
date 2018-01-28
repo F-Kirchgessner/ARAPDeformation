@@ -12,6 +12,7 @@ class ARAPSimulator:public Simulator{
 public:
 	// Construtors
 	ARAPSimulator();
+	~ARAPSimulator();
 
 	// Functions
 	const char * getTestCasesStr();

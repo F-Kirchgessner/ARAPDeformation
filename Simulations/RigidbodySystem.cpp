@@ -47,7 +47,11 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 	// Draw rigid bodies
 	for (auto& rigidbodySystem : m_rigidbodies) {
 		if (rigidbodySystem.visible) {
-			DUC->setUpLighting(Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue));
+			if (rigidbodySystem.isFixed)
+				DUC->setUpLighting(Vec3(0.05, 0.1, 0.1), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(0.05, 0.1, 0.1));
+			else
+				DUC->setUpLighting(Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue));
+			
 			rigidbodySystem.Obj2WorldMatrix = rigidbodySystem.scaleMat * rigidbodySystem.rotMat * rigidbodySystem.transMat;
 			DUC->drawRigidBody(rigidbodySystem.Obj2WorldMatrix);
 		}
@@ -216,6 +220,12 @@ void RigidbodySystem::throwBlock() {
 
 		addRigidBody(newBody, Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
 		applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
+
+		// Fix springs
+		m_springList[0].mass_point1 = &m_rigidbodies.at(0);
+		m_springList[0].mass_point2 = &m_rigidbodies.at(signIndex);
+		m_springList[1].mass_point1 = &m_rigidbodies.at(1);
+		m_springList[1].mass_point2 = &m_rigidbodies.at(signIndex);
 	}
 }
 
@@ -224,7 +234,7 @@ void RigidbodySystem::removeFallenBlocks() {
 	std::vector<int> indexlist;
 	for (int i = 0; i < m_rigidbodies.size(); i++)
 	{
-		if (m_rigidbodies[i].m_position.y <= -2.0f && i != signIndex) {
+		if (m_rigidbodies[i].m_position.y <= -2.0f && i > signIndex) {
 			indexlist.push_back(i);
 		}
 	}

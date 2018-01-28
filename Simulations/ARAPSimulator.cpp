@@ -13,6 +13,11 @@ ARAPSimulator::ARAPSimulator()
 	m_RigidbodySystem = new RigidbodySystem();
 }
 
+ARAPSimulator::~ARAPSimulator()
+{
+	m_pMesh.reset();
+}
+
 const char * ARAPSimulator::getTestCasesStr(){
 	return "Basic Mesh,Physics Objects";
 }
