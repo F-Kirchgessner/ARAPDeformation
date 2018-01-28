@@ -3,7 +3,7 @@
 
 ARAPSimulator::ARAPSimulator()
 {
-	m_iTestCase = 0;
+	m_iTestCase = 1;
 	m_vfMovableObjectPos = Vec3();
 	m_vfMovableObjectFinalPos = Vec3();
 	m_vfRotate = Vec3();
@@ -48,22 +48,24 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	case 0: {
 		cout << "Draw model!\n";
 		
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.1f, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.01f, false);
 		findNeighbours(&vertexNeighbours);
 
 		// Test move vertex
-		uint16_t index = 0;
+		/*uint16_t index = 0;
 		XMFLOAT3 newPosition = { 100,100,100 };
 		m_pMesh->SetVertex(index, newPosition);
 
 		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);*/
 
 		break;
 	}
 	case 1:
 		cout << "Physics Objects!\n";
 		m_RigidbodySystem->reset();
+
+		m_pMesh = GeometricPrimitive::CreateMesh("../Sign.obj", DUC->g_pd3dImmediateContext, 0.0045f, false);
 		break;
 	default:
 		cout << "Empty Test!\n";
@@ -157,7 +159,10 @@ void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	switch(m_iTestCase)
 	{
 	case 0: drawMesh();break;
-	case 1: m_RigidbodySystem->drawObjects(pd3dImmediateContext, DUC);break;
+	case 1: 
+		m_RigidbodySystem->drawObjects(pd3dImmediateContext, DUC);
+		drawMesh(m_RigidbodySystem->m_rigidbodies[3].m_position, m_RigidbodySystem->m_rigidbodies[3].orientation, Vec3(1, 1, 1));
+		break;
 	}
 }
 
@@ -177,6 +182,20 @@ void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
 	XMMATRIX s = XMMatrixScaling(XMVectorGetX(scaleXM), XMVectorGetY(scaleXM), XMVectorGetZ(scaleXM));
 	XMMATRIX t = XMMatrixTranslation(XMVectorGetX(posXM), XMVectorGetY(posXM), XMVectorGetZ(posXM));
 	XMMATRIX r = XMMatrixRotationRollPitchYaw(XMVectorGetX(rotXM), XMVectorGetX(rotXM), XMVectorGetX(rotXM));
+
+	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
+	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
+}
+
+void ARAPSimulator::drawMesh(Vec3 pos, Quat rot, Vec3 scale)
+{
+	XMVECTOR posXM = pos.toDirectXVector();
+	XMVECTOR scaleXM = scale.toDirectXVector();
+
+	// Setup position/normal effect (per object variables)
+	XMMATRIX s = XMMatrixScaling(XMVectorGetX(scaleXM), XMVectorGetY(scaleXM), XMVectorGetZ(scaleXM));
+	XMMATRIX t = XMMatrixTranslation(XMVectorGetX(posXM), XMVectorGetY(posXM), XMVectorGetZ(posXM));
+	XMMATRIX r = XMMatrixRotationQuaternion(rot.toDirectXQuat());
 
 	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
 	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);

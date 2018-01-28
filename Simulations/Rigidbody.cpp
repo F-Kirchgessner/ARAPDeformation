@@ -7,7 +7,7 @@ Rigidbody::Rigidbody()
 
 }
 
-Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, float dampingVel, float dampingRot, bool fixed) : size(size), m_position(position), mass(mass), dampingVel(dampingVel), dampingRot(dampingRot), isFixed(fixed)
+Rigidbody::Rigidbody(Vec3 size, Vec3 position, float mass, float dampingVel, float dampingRot, bool fixed, bool visible) : size(size), m_position(position), mass(mass), dampingVel(dampingVel), dampingRot(dampingRot), isFixed(fixed), visible(visible)
 {
 	// 45 deg. 
 	// need to be removed

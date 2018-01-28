@@ -28,6 +28,7 @@ public:
 	// Specific Functions
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
+	void drawMesh(Vec3 pos, Quat rot, Vec3 scale);
 
 private:
 	// Attributes
