@@ -20,13 +20,13 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
-	addRigidBody(Vec3(0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
-	addRigidBody(Vec3(0, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true);
+	addRigidBody(Vec3(-0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(0, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
 
-	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false);
+	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false, false);
 
-	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
+	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
 	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 
 	addSpring(0, 3, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.4f);
@@ -47,9 +47,11 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 
 	// Draw rigid bodies
 	for (auto& rigidbodySystem : m_rigidbodies) {
-		DUC->setUpLighting(Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue));
-		rigidbodySystem.Obj2WorldMatrix = rigidbodySystem.scaleMat * rigidbodySystem.rotMat * rigidbodySystem.transMat;
-		DUC->drawRigidBody(rigidbodySystem.Obj2WorldMatrix);
+		if (rigidbodySystem.visible) {
+			DUC->setUpLighting(Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue), 0.4*Vec3(1, 1, 1), 2000.0, Vec3(rigidbodySystem.red, rigidbodySystem.green, rigidbodySystem.blue));
+			rigidbodySystem.Obj2WorldMatrix = rigidbodySystem.scaleMat * rigidbodySystem.rotMat * rigidbodySystem.transMat;
+			DUC->drawRigidBody(rigidbodySystem.Obj2WorldMatrix);
+		}
 	}
 
 	// Draw springs
@@ -177,8 +179,8 @@ void RigidbodySystem::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 }
 
 
-void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool isFixed) {
-	Rigidbody rig(size, position, mass, m_fDampingVel, m_fDampingRot, isFixed);
+void RigidbodySystem::addRigidBody(Vec3 position, Vec3 size, float mass, bool isFixed, bool visible) {
+	Rigidbody rig(size, position, mass, m_fDampingVel, m_fDampingRot, isFixed, visible);
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	rig.red = dis(gen);
