@@ -42,6 +42,7 @@ public:
 
 	void initTestScene();
 
+	int signIndex;
 	std::vector<Rigidbody> m_rigidbodies;
 	std::vector<Spring> m_springList;
 

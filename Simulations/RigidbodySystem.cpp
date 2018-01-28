@@ -25,6 +25,7 @@ void RigidbodySystem::initTestScene()
 	addRigidBody(Vec3(0, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
 
 	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false, false);
+	signIndex = getNumberOfRigidBodies() - 1;
 
 	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
 	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
@@ -210,17 +211,11 @@ void RigidbodySystem::setVelocityOf(int i, Vec3 velocity) {
 void RigidbodySystem::throwBlock() {
 	if (!m_rigidbodies.empty()) {
 		Vec3 newBody;
-		for (int i = 0; i < m_rigidbodies.size(); ++i)
-		{
-			if (m_rigidbodies[i].mass == 1.0f) {
+		newBody.x = m_rigidbodies[signIndex].m_position.x;
+		newBody.y = m_rigidbodies[signIndex].m_position.y;
+		newBody.Z = m_rigidbodies[signIndex].m_position.z - 0.5f;
 
-				newBody.x = m_rigidbodies[i].m_position.x;
-				newBody.y = m_rigidbodies[i].m_position.y;
-				newBody.Z = m_rigidbodies[i].m_position.z - 0.5f;
-
-			}
-		}
-		addRigidBody(newBody, Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
+		addRigidBody(newBody, Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
 		applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 	}
 }

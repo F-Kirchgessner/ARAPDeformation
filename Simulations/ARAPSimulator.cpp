@@ -161,7 +161,8 @@ void ARAPSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	case 0: drawMesh();break;
 	case 1: 
 		m_RigidbodySystem->drawObjects(pd3dImmediateContext, DUC);
-		drawMesh(m_RigidbodySystem->m_rigidbodies[3].m_position, m_RigidbodySystem->m_rigidbodies[3].orientation, Vec3(1, 1, 1));
+		int signIndex = m_RigidbodySystem->signIndex;
+		drawMesh(m_RigidbodySystem->m_rigidbodies[signIndex].m_position, m_RigidbodySystem->m_rigidbodies[signIndex].orientation, Vec3(1, 1, 1));
 		break;
 	}
 }
