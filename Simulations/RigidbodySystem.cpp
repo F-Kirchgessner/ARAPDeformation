@@ -20,9 +20,8 @@ RigidbodySystem::~RigidbodySystem()
 
 void RigidbodySystem::initTestScene()
 {
-	addRigidBody(Vec3(-0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
-	addRigidBody(Vec3(0.6f, 2.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
-	addRigidBody(Vec3(0, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(-0.6f, 1.5f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(0.6f, 1.5f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
 
 	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false, false);
 	signIndex = getNumberOfRigidBodies() - 1;
@@ -30,9 +29,8 @@ void RigidbodySystem::initTestScene()
 	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
 	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 
-	addSpring(0, 3, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.4f);
-	addSpring(1, 3, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.4f);
-	//addSpring(2, 3, Vec3(0, 0, 0), Vec3(0, -0.25f, 0), 0.4f);
+	addSpring(0, signIndex, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.4f);
+	addSpring(1, signIndex, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.4f);
 }
 
 
@@ -59,7 +57,8 @@ void RigidbodySystem::drawObjects(ID3D11DeviceContext* pd3dImmediateContext, Dra
 	DUC->beginLine();
 	for (auto& spring : m_springList) {
 		float springForce = spring.force.squaredDistanceTo(Vec3(0, 0, 0));
-		DUC->drawLine(spring.mass_point1->m_position + spring.pos1, Vec3(0, 1 - springForce, springForce), spring.mass_point2->m_position + spring.pos2, Vec3(0, 1 - springForce, springForce));
+		Vec3 color = Vec3(0.4, 0.7, 0.2);
+		DUC->drawLine(spring.mass_point1->m_position + spring.pos1, color, spring.mass_point2->m_position + spring.pos2, color);
 	}
 	DUC->endLine();
 }
@@ -223,17 +222,13 @@ void RigidbodySystem::throwBlock() {
 void RigidbodySystem::removeFallenBlocks() {
 
 	std::vector<int> indexlist;
-	for (int i = 0; i < m_rigidbodies.size(); ++i)
+	for (int i = 0; i < m_rigidbodies.size(); i++)
 	{
-		if (m_rigidbodies[i].m_position.y <= -2.0f) {
-			if (!m_rigidbodies[i].mass == 1.0f) {
-
-				indexlist.push_back(i);
-				//m_rigidbodies[i].isFixed = true;
-			}
+		if (m_rigidbodies[i].m_position.y <= -2.0f && i != signIndex) {
+			indexlist.push_back(i);
 		}
 	}
-	for (int i = 0; i < indexlist.size(); ++i)
+	for (int i = 0; i < indexlist.size(); i++)
 	{
 		m_rigidbodies.erase(m_rigidbodies.begin() + indexlist[i]);		
 	}

@@ -65,7 +65,7 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		cout << "Physics Objects!\n";
 		m_RigidbodySystem->reset();
 
-		m_pMesh = GeometricPrimitive::CreateMesh("../Sign.obj", DUC->g_pd3dImmediateContext, 0.0045f, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../Sign.obj", DUC->g_pd3dImmediateContext, 0.0046f, false);
 		break;
 	default:
 		cout << "Empty Test!\n";
@@ -198,6 +198,7 @@ void ARAPSimulator::drawMesh(Vec3 pos, Quat rot, Vec3 scale)
 	XMMATRIX t = XMMatrixTranslation(XMVectorGetX(posXM), XMVectorGetY(posXM), XMVectorGetZ(posXM));
 	XMMATRIX r = XMMatrixRotationQuaternion(rot.toDirectXQuat());
 
+	DUC->setUpLighting(Vec3(), 0.4*Vec3(1, 1, 1), 100, 0.6*Vec3(0.41, 0.3, 0.2));
 	DUC->g_pEffectPositionNormal->SetWorld(r * s * t * DUC->g_camera.GetWorldMatrix());
 	m_pMesh->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
 }
