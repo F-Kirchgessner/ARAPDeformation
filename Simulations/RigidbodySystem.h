@@ -36,6 +36,8 @@ public:
 	void addSpring(int masspoint1, int masspoint2, Vec3 pos1, Vec3 pos2, float initialLength);
 	void setOrientationOf(int i, Quat orientation);
 	void setVelocityOf(int i, Vec3 velocity);
+	void throwBlock();
+	void removeFallenBlocks();
 	//void pullTogether();
 
 	void initTestScene();

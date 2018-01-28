@@ -67,6 +67,7 @@ void RigidbodySystem::simulateTimestep(float timeStep) {
 
 	integrate(timeStep);
 	checkForCollisions();
+	removeFallenBlocks();
 	for (auto& rigidbodySystem : m_rigidbodies) {
 		rigidbodySystem.updateStep(timeStep);
 	}
@@ -202,6 +203,43 @@ void RigidbodySystem::setOrientationOf(int i, Quat orientation) {
 
 void RigidbodySystem::setVelocityOf(int i, Vec3 velocity) {
 	m_rigidbodies.at(i).velocity = velocity;
+}
+
+void RigidbodySystem::throwBlock() {
+	if (!m_rigidbodies.empty()) {
+		Vec3 newBody;
+		for (int i = 0; i < m_rigidbodies.size(); ++i)
+		{
+			if (m_rigidbodies[i].mass == 1.0f) {
+
+				newBody.x = m_rigidbodies[i].m_position.x;
+				newBody.y = m_rigidbodies[i].m_position.y;
+				newBody.Z = m_rigidbodies[i].m_position.z - 0.5f;
+
+			}
+		}
+		addRigidBody(newBody, Vec3(0.2f, 0.2f, 0.2f), 0.1f, false);
+		applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
+	}
+}
+
+void RigidbodySystem::removeFallenBlocks() {
+
+	std::vector<int> indexlist;
+	for (int i = 0; i < m_rigidbodies.size(); ++i)
+	{
+		if (m_rigidbodies[i].m_position.y <= -2.0f) {
+			if (!m_rigidbodies[i].mass == 1.0f) {
+
+				indexlist.push_back(i);
+				//m_rigidbodies[i].isFixed = true;
+			}
+		}
+	}
+	for (int i = 0; i < indexlist.size(); ++i)
+	{
+		m_rigidbodies.erase(m_rigidbodies.begin() + indexlist[i]);		
+	}
 }
 
 /*

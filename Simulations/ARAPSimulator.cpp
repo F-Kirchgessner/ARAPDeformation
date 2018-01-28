@@ -184,8 +184,11 @@ void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
 
 void ARAPSimulator::onClick(int x, int y)
 {
-	m_trackmouse.x = x;
-	m_trackmouse.y = y;
+	//m_trackmouse.x = x;
+	//m_trackmouse.y = y;
+	if (m_iTestCase == 1) {
+		m_RigidbodySystem->throwBlock();
+	}
 }
 
 void ARAPSimulator::onMouse(int x, int y)
