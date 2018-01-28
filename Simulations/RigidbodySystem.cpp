@@ -4,9 +4,9 @@
 RigidbodySystem::RigidbodySystem()
 {
 	m_elasticity = 1.0f;
-	m_timeFactor = 1.0f;
+	m_timeFactor = 2.0f;
 	m_fStiffness = 6.0f;
-	m_fDampingVel = 0.1f;
+	m_fDampingVel = 0.3f;
 	m_fDampingRot = 1.0f;
 	m_fGravity = 9.81f;
 	m_iIntegrator = EULER;
@@ -22,15 +22,19 @@ void RigidbodySystem::initTestScene()
 {
 	addRigidBody(Vec3(-0.6f, 1.5f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
 	addRigidBody(Vec3(0.6f, 1.5f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(-0.6f, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
+	addRigidBody(Vec3(0.6f, -1.0f, 0.0f), Vec3(0.1f, 0.1f, 0.1f), 0.0f, true, true);
 
 	addRigidBody(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.7f, 0.5f, 0.1f), 1.0f, false, false);
 	signIndex = getNumberOfRigidBodies() - 1;
 
-	addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
-	applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
+	//addRigidBody(Vec3(0.0f, 0.0f, -0.5f), Vec3(0.2f, 0.2f, 0.2f), 0.1f, false, true);
+	//applyForceOnBody(getNumberOfRigidBodies() - 1, Vec3(0, 0, -0.1f), Vec3(0, 0, 500.0f));
 
-	addSpring(0, signIndex, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0), 0.4f);
-	addSpring(1, signIndex, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0), 0.4f);
+	addSpring(0, signIndex, Vec3(0, 0, 0), Vec3(-0.3f, 0.25f, 0.0f), 0.4f);
+	addSpring(1, signIndex, Vec3(0, 0, 0), Vec3(0.3f, 0.25f, 0.0f), 0.4f);
+	addSpring(2, signIndex, Vec3(0, 0, 0), Vec3(-0.3f, -0.25f, 0.0f), 0.4f);
+	addSpring(3, signIndex, Vec3(0, 0, 0), Vec3(0.3f, -0.25f, 0.0f), 0.4f);
 }
 
 
@@ -226,6 +230,12 @@ void RigidbodySystem::throwBlock() {
 		m_springList[0].mass_point2 = &m_rigidbodies.at(signIndex);
 		m_springList[1].mass_point1 = &m_rigidbodies.at(1);
 		m_springList[1].mass_point2 = &m_rigidbodies.at(signIndex);
+		if (m_springList.size() >= 4) {
+			m_springList[2].mass_point1 = &m_rigidbodies.at(2);
+			m_springList[2].mass_point2 = &m_rigidbodies.at(signIndex);
+			m_springList[3].mass_point1 = &m_rigidbodies.at(3);
+			m_springList[3].mass_point2 = &m_rigidbodies.at(signIndex);
+		}
 	}
 }
 
