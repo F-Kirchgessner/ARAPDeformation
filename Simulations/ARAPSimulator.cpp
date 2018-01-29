@@ -48,16 +48,20 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	case 0: {
 		cout << "Draw model!\n";
 		
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.01f, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
 		findNeighbours(&vertexNeighbours);
 
 		// Test move vertex
-		/*uint16_t index = 0;
-		XMFLOAT3 newPosition = { 100,100,100 };
-		m_pMesh->SetVertex(index, newPosition);
+		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
+		handleHelper(353, 0, 1, 0);
+		handleHelper(65, 0, 0, 0);
+		handleHelper(165, 0, 1, 0);
+		handleHelper(258, 0, 0, 0);
+
+		alg.init();
 
 		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);*/
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 
 		break;
 	}
@@ -105,6 +109,10 @@ void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neigh
 		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
 		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
 	}
+	//Sort neighborlists, this is later important for wij calculations
+	for (auto kv : *neighborList) {
+		sort(kv.second->begin(), kv.second->end());
+	}
 }
 
 
@@ -137,13 +145,11 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 	switch (m_iTestCase)
 	{// handling different cases
 	case 0:
-		// rotate the teapot
-		/*m_vfRotate.x += timeStep;
-		if (m_vfRotate.x > 2 * M_PI) m_vfRotate.x -= 2.0f * (float)M_PI;
-		m_vfRotate.y += timeStep;
-		if (m_vfRotate.y > 2 * M_PI) m_vfRotate.y -= 2.0f * (float)M_PI;
-		m_vfRotate.z += timeStep;
-		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;*/
+		alg.iteration_step();
+		alg.updateMesh();
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		handleHelper(353, timeStep, -timeStep, timeStep);
+		handleHelper(165,-timeStep, -timeStep, -timeStep);
 		break;
 
 	case 1:
@@ -214,3 +220,10 @@ void ARAPSimulator::onMouse(int x, int y)
 	m_trackmouse.x = x;
 	m_trackmouse.y = y;
 }
+
+//This is just a helper function for Testing purposes!
+void ARAPSimulator::handleHelper(int i, float x, float y, float z) {
+	auto pos = m_pMesh->GetVertexList()[i].position;
+	alg.setHandle(i, pos.x + x, pos.y + y, pos.z + z);
+	m_pMesh->SetVertex(i, { pos.x + x, pos.y + y, pos.z + z });
+};

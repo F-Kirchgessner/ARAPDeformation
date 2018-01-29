@@ -7,6 +7,7 @@
 #include "../DirectXTK/Src/Geometry.h"
 #include <map>
 #include <vector>
+#include "ArapAlgorithm.h"
 
 class ARAPSimulator:public Simulator{
 public:
@@ -29,6 +30,7 @@ public:
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
 	void drawMesh(Vec3 pos, Quat rot, Vec3 scale);
+	void handleHelper(int i, float x, float y, float z);
 
 private:
 	// Attributes
@@ -44,6 +46,9 @@ private:
 
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
+
+
+	ArapAlgorithm alg;
 };
 
 #endif
