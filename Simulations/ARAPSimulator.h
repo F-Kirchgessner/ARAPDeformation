@@ -9,6 +9,7 @@
 #include<fstream>
 #include <sstream>
 #include <string>
+#include "ArapAlgorithm.h"
 
 class ARAPSimulator:public Simulator{
 public:
@@ -28,7 +29,6 @@ public:
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 	// Specific Functions
-	void drawSomeRandomObjects();
 	void drawTriangle();
 	void drawMesh();
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
@@ -36,7 +36,8 @@ public:
 
 	void parseConfigFile();
 	uint16_t skeleton_vertices[20];
-
+	void drawMesh(Vec3 pos, Quat rot, Vec3 scale);
+	void handleHelper(int i, float x, float y, float z);
 private:
 	// Attributes
 	Vec3  m_vfMovableObjectPos;
@@ -50,8 +51,10 @@ private:
 
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
-	uint16_t handle_vertex;
-	
+	std::vector<uint16_t> handle_vertex;
+
+
+	ArapAlgorithm alg;
 };
 
 #endif

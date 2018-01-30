@@ -105,7 +105,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_CONSOLE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs/Eigen;$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -133,7 +133,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_CONSOLE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(KINECTSDK10_DIR)\inc;$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs/Eigen;$(KINECTSDK10_DIR)\inc;$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
@@ -166,7 +166,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_CONSOLE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs/Eigen;$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -198,7 +198,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_CONSOLE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libs/Eigen;$(SolutionDir)DirectXTK/Inc;$(SolutionDir)DXUT11/Core;$(SolutionDir)DXUT11/Optional;$(SolutionDir)Effects11/inc;$(SolutionDir)AntTweakBar/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
@@ -226,12 +226,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArapAlgorithm.cpp" />
     <ClCompile Include="ARAPSimulator.cpp" />
     <ClCompile Include="KinectSensor.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArapAlgorithm.h" />
     <ClInclude Include="DrawingUtilitiesClass.h" />
     <ClInclude Include="KinectSensor.h" />
     <ClInclude Include="Simulator.h" />
