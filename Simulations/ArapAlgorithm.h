@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <math.h>
+#include <set>
 
 
 class ArapAlgorithm {
@@ -40,6 +41,9 @@ private:
 
 	std::vector< std::vector<uint16_t>* > neighbours;
 	std::map<uint16_t, Eigen::Vector3f> handles;
+	//std::set<std::set<uint16_t, Eigen::Vector3f>> SetHandles;
+	//std::set<Eigen::Vector3f> HandleVertices;
+	//std::set<Eigen::Vector3f> HandlePosition;
 
 	Eigen::SparseLU<Eigen::SparseMatrix<float>> cholesky;
 

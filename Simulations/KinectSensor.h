@@ -13,6 +13,7 @@ public:
 
 	void Update();
 	void ProcessSkeleton();
+	void ResetKinect1();
 
 	//to get the skeleton frame
 	NUI_SKELETON_FRAME GetSkeletonframe();

@@ -1,8 +1,9 @@
 #include "ARAPSimulator.h"
 #include "KinectSensor.h"
 #include "MassSpringSystemSimulator.h"
+#include <vector>
 
-KinectSensor *kinect;
+//KinectSensor *kinect;
 
 ARAPSimulator::ARAPSimulator()
 	: handle_vertex(20, -1)
@@ -13,7 +14,7 @@ ARAPSimulator::ARAPSimulator()
 	m_vfRotate = Vec3();
 	m_iNumSpheres = 100;
 	m_fSphereSize = 0.05f;
-	kinect = new KinectSensor();
+	//kinect = new KinectSensor();
 	//create an array containing the vertices that correspond to each skeleton joint
 	parseConfigFile();
 
@@ -29,6 +30,9 @@ void ARAPSimulator::reset() {
 	m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
 
 	m_pMesh.reset();
+
+	//kinect->ResetKinect1();
+
 	// TODO Release vertexNeighbours
 }
 
@@ -60,11 +64,22 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		alg.init();
 
 
-		handle_vertex[7] = 365;
-		handle_vertex[11] = 65;
-		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		/*
+		//right
+		//handle_vertex[5] = 177;
+		handle_vertex[NUI_SKELETON_POSITION_HAND_LEFT] = 358;
+		//left
+		handle_vertex[NUI_SKELETON_POSITION_HAND_RIGHT] = 72;
+		//handle_vertex[9] = 245;
+		
+		//shoulder center =  438
+		handle_vertex[NUI_SKELETON_POSITION_SHOULDER_CENTER] = 438;
+		//hip center 212
+		handle_vertex[NUI_SKELETON_POSITION_HIP_CENTER] = 212;
 
+		// Update vertex buffer do display changes
+		//m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		*/
 		break;
 	}
 	case 1:
@@ -144,7 +159,7 @@ void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >
 
 void ARAPSimulator::parseConfigFile() {
 
-	std::ifstream infile("C:\\Users\\pti\\Downloads\\3d\\project\\ARAPKinect\\ARAP\\Simulations\\skeleton_config.txt");
+	std::ifstream infile("C:\\Users\\iamon\\Documents\\3d project\\ARAP_withdemo\\ARAP_demo\\Simulations\\skeleton_config.txt");
 	std::string line;
 	//uint16_t skeleton_vertices[20];
 
@@ -152,18 +167,49 @@ void ARAPSimulator::parseConfigFile() {
 	{
 		int i = 0;
 
-		while (std::getline(infile, line) || i<20) //only 20 skeleton joints, if there are more lines do not process them
+		while (std::getline(infile, line) || i<20 ) //only 20 skeleton joints, if there are more lines do not process them
 		{
 			auto delimiterPos = line.find(":");
 			auto name = line.substr(0, delimiterPos);
 			auto value = line.substr(delimiterPos + 1);
 			//std::cout << "name: " << name << std::endl;
-			skeleton_vertices[i] = atoi(value.c_str()); //assign to each skeleton joint the assosiate 
-			//std::cout << "name: " << i << " ";
-			//std::cout << "value: " << skeleton_vertices[i] << std::endl;
+			//value = "1,2,";
+			//std::cout << "value: " << value << std::endl;
+			if (value.find(",") != std::string::npos)
+			{
+
+				std::size_t delimit = value.find(",");
+				while( delimit != std::string::npos)
+				{
+					auto val1 = value.substr(0, delimit);
+					value=value.substr(delimit + 1);
+					delimit = value.find(",");
+					SetVertex.push_back(std::pair <int, uint16_t>(i, atoi(val1.c_str())));
+					
+				}
+
+				
+			}
+			else
+			{
+				skeleton_vertices[i] = atoi(value.c_str());//assign to each skeleton joint the assosiate 
+				//handle_vertex[i] = skeleton_vertices[i];
+				SetVertex.push_back(std::pair <int, uint16_t>(i, handle_vertex[i]));
+			}
+			
+
+			
 			i++;
 		}
 		infile.close();
+		std::cout << "vertices mapped to Skelton" << std::endl << std::endl;
+		for (size_t ind = 0 ; ind < SetVertex.size(); ind++)
+		{
+			std::cout << "value: " << SetVertex[ind].first << " " << SetVertex[ind].second << std::endl;
+		}
+		std::getchar();
+		
+			
 	}
 	else {
 		std::cout << "Unable to open config file." << '\n';
@@ -175,11 +221,12 @@ void ARAPSimulator::parseConfigFile() {
 
 void ARAPSimulator::newskeletondata()
 {
+	auto vertices_list = m_pMesh->GetVertexList();
 
 
 	//code to move the handles or move the wings 
 	NUI_SKELETON_FRAME skeletonFrame;
-	skeletonFrame = kinect->GetSkeletonframe();
+	//skeletonFrame = kinect->GetSkeletonframe();
 	for (int i = 0; i < 6; i++) //Six times, because the Kinect has space to track six people
 	{
 
@@ -189,16 +236,43 @@ void ARAPSimulator::newskeletondata()
 		if (NUI_SKELETON_TRACKED == trackingState) {
 			//Print "Right hand:"
 			std::cout << "ProcessSkeleton = " << i << std::endl;
-			for (size_t j = 0; j <handle_vertex.size(); j++)
+			
+			for (size_t j = 0; j <SetVertex.size(); j++)
 			{
-				if (handle_vertex[j] >= 0) {
-					float x = skeletonFrame.SkeletonData[i].SkeletonPositions[j].x * 2;
-					float y = skeletonFrame.SkeletonData[i].SkeletonPositions[j].y * 2;
-					float z = skeletonFrame.SkeletonData[i].SkeletonPositions[j].z * 2;
-					alg.setHandle(handle_vertex[j], x, y, z);
-					std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
+				auto MapdSkelPart = SetVertex[j].first;
+				if (handle_vertex[j] < totalVertxInModel) {
+					float x = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].x * 2;
+					float y = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].y * 2;
+					float z = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].z * 2;
+
+					//if ( j == 7 || j == 11 )
+					//alg.setHandle(handle_vertex[j], vertices_list[handle_vertex[j]].position.x, y, vertices_list[handle_vertex[j]].position.z);
+					//else
+					alg.setHandle(SetVertex[j].second, x, y, z);
+					
+					std::cout << SetVertex[j].second << " = " << x << " " << y << " " << z << " " << std::endl;
+					//std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
 				}
 			}
+			/*
+			for (size_t j = 0; j <handle_vertex.size(); j++)
+			{
+			if (handle_vertex[j] < totalVertxInModel ) {
+			float x = skeletonFrame.SkeletonData[i].SkeletonPositions[j].x * 2;
+			float y = skeletonFrame.SkeletonData[i].SkeletonPositions[j].y * 2;
+			float z = skeletonFrame.SkeletonData[i].SkeletonPositions[j].z * 2;
+
+			//if ( j == 7 || j == 11 )
+			//alg.setHandle(handle_vertex[j], vertices_list[handle_vertex[j]].position.x, y, vertices_list[handle_vertex[j]].position.z);
+			//else
+			alg.setHandle(handle_vertex[j], x, y, z);
+
+			std::cout << handle_vertex[j] << " = " << x << " " << y << " " << z << " " << std::endl;
+			std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
+			}
+			}
+			*/
+			
 		}
 	}
 }

@@ -10,6 +10,8 @@
 #include <sstream>
 #include <string>
 #include "ArapAlgorithm.h"
+#include <set>
+
 
 class ARAPSimulator:public Simulator{
 public:
@@ -52,6 +54,9 @@ private:
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
 	std::vector<uint16_t> handle_vertex;
+	std::vector< pair<int,uint16_t> > SetVertex;
+
+	std::uint16_t totalVertxInModel = 454;
 
 
 	ArapAlgorithm alg;

@@ -25,6 +25,18 @@ KinectSensor::~KinectSensor()
 	}
 }
 
+void KinectSensor::ResetKinect1()
+{
+	if (m_pNuiSensor)
+	{
+		m_pNuiSensor->NuiShutdown();
+	}
+	if (m_hNextSkeletonEvent && (m_hNextSkeletonEvent != INVALID_HANDLE_VALUE))
+	{
+		CloseHandle(m_hNextSkeletonEvent);
+	}
+	HRESULT hr = createFirstConnected();
+}
 
 void KinectSensor::Update()
 {
