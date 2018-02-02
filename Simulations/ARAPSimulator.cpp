@@ -3,10 +3,9 @@
 #include "MassSpringSystemSimulator.h"
 #include <vector>
 
-//KinectSensor *kinect;
+KinectSensor *kinect;
 
 ARAPSimulator::ARAPSimulator()
-	: handle_vertex(20, -1)
 {
 	m_iTestCase = 1;
 	m_vfMovableObjectPos = Vec3();
@@ -14,7 +13,7 @@ ARAPSimulator::ARAPSimulator()
 	m_vfRotate = Vec3();
 	m_iNumSpheres = 100;
 	m_fSphereSize = 0.05f;
-	//kinect = new KinectSensor();
+	kinect = new KinectSensor();
 	//create an array containing the vertices that correspond to each skeleton joint
 	parseConfigFile();
 
@@ -31,7 +30,7 @@ void ARAPSimulator::reset() {
 
 	m_pMesh.reset();
 
-	//kinect->ResetKinect1();
+	kinect->ResetKinect1();
 
 	// TODO Release vertexNeighbours
 }
@@ -53,33 +52,18 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 
 void ARAPSimulator::notifyCaseChanged(int testCase)
 {
+	float scale = 0.6;
 	m_iTestCase = testCase;
 	switch (m_iTestCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
+		//m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../Iron_Man.obj", DUC->g_pd3dImmediateContext, scale, false);
 		findNeighbours(&vertexNeighbours);
 		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
 		alg.init();
 
-
-		/*
-		//right
-		//handle_vertex[5] = 177;
-		handle_vertex[NUI_SKELETON_POSITION_HAND_LEFT] = 358;
-		//left
-		handle_vertex[NUI_SKELETON_POSITION_HAND_RIGHT] = 72;
-		//handle_vertex[9] = 245;
-		
-		//shoulder center =  438
-		handle_vertex[NUI_SKELETON_POSITION_SHOULDER_CENTER] = 438;
-		//hip center 212
-		handle_vertex[NUI_SKELETON_POSITION_HIP_CENTER] = 212;
-
-		// Update vertex buffer do display changes
-		//m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
-		*/
 		break;
 	}
 	case 1:
@@ -123,7 +107,7 @@ void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neigh
 	VertexCollection vertices = m_pMesh->GetVertexList();
 	IndexCollection indices = m_pMesh->GetIndexList();
 
-	for (uint16_t idx = 0; idx < indices.size(); idx += 3) {
+	for (size_t idx = 0; idx < indices.size(); idx += 3) {
 		insertVertexNeighbors(neighborList, indices[idx], indices[idx + 1], indices[idx + 2]);
 		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
 		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
@@ -159,7 +143,8 @@ void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >
 
 void ARAPSimulator::parseConfigFile() {
 
-	std::ifstream infile("C:\\Users\\iamon\\Documents\\3d project\\ARAP_withdemo\\ARAP_demo\\Simulations\\skeleton_config.txt");
+	//std::ifstream infile("../Simulations/skeleton_config.txt");
+	std::ifstream infile("../Simulations/IronMan_config.txt");
 	std::string line;
 	//uint16_t skeleton_vertices[20];
 
@@ -184,7 +169,7 @@ void ARAPSimulator::parseConfigFile() {
 					auto val1 = value.substr(0, delimit);
 					value=value.substr(delimit + 1);
 					delimit = value.find(",");
-					SetVertex.push_back(std::pair <int, uint16_t>(i, atoi(val1.c_str())));
+					SetVertex.push_back(std::pair <int, int>(i, atoi(val1.c_str())));
 					
 				}
 
@@ -192,9 +177,7 @@ void ARAPSimulator::parseConfigFile() {
 			}
 			else
 			{
-				skeleton_vertices[i] = atoi(value.c_str());//assign to each skeleton joint the assosiate 
-				//handle_vertex[i] = skeleton_vertices[i];
-				SetVertex.push_back(std::pair <int, uint16_t>(i, handle_vertex[i]));
+					SetVertex.push_back(std::pair <int, int>(i, atoi(value.c_str()) ));
 			}
 			
 
@@ -226,7 +209,7 @@ void ARAPSimulator::newskeletondata()
 
 	//code to move the handles or move the wings 
 	NUI_SKELETON_FRAME skeletonFrame;
-	//skeletonFrame = kinect->GetSkeletonframe();
+	skeletonFrame = kinect->GetSkeletonframe();
 	for (int i = 0; i < 6; i++) //Six times, because the Kinect has space to track six people
 	{
 
@@ -240,38 +223,31 @@ void ARAPSimulator::newskeletondata()
 			for (size_t j = 0; j <SetVertex.size(); j++)
 			{
 				auto MapdSkelPart = SetVertex[j].first;
-				if (handle_vertex[j] < totalVertxInModel) {
+				if (SetVertex[j].second >= 0 ) {
 					float x = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].x * 2;
 					float y = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].y * 2;
 					float z = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].z * 2;
+					
+					/*auto MapdMeshVert = SetVertex[j].second;
+					if ( MapdSkelPart == 7 || MapdSkelPart == 11 )
+					{ 
+						//alg.setHandle(MapdMeshVert, vertices_list[MapdMeshVert].position.x, y, vertices_list[MapdMeshVert].position.z);
+						m_pMesh->SetVertex(SetVertex[j].second, { vertices_list[MapdMeshVert].position.x, y, vertices_list[MapdMeshVert].position.z });
+					}						
+					else
+					{
+						//alg.setHandle(MapdMeshVert, x, y, z);
+						m_pMesh->SetVertex(SetVertex[j].second, { x, y, z });
+					}
+					*/
 
-					//if ( j == 7 || j == 11 )
-					//alg.setHandle(handle_vertex[j], vertices_list[handle_vertex[j]].position.x, y, vertices_list[handle_vertex[j]].position.z);
-					//else
+					std::cout << SetVertex[j].second << " = " << x << " " << y << " " << z << " " << std::endl;
+					//m_pMesh->SetVertex(SetVertex[j].second, { x, y, z });
 					alg.setHandle(SetVertex[j].second, x, y, z);
 					
-					std::cout << SetVertex[j].second << " = " << x << " " << y << " " << z << " " << std::endl;
 					//std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
 				}
 			}
-			/*
-			for (size_t j = 0; j <handle_vertex.size(); j++)
-			{
-			if (handle_vertex[j] < totalVertxInModel ) {
-			float x = skeletonFrame.SkeletonData[i].SkeletonPositions[j].x * 2;
-			float y = skeletonFrame.SkeletonData[i].SkeletonPositions[j].y * 2;
-			float z = skeletonFrame.SkeletonData[i].SkeletonPositions[j].z * 2;
-
-			//if ( j == 7 || j == 11 )
-			//alg.setHandle(handle_vertex[j], vertices_list[handle_vertex[j]].position.x, y, vertices_list[handle_vertex[j]].position.z);
-			//else
-			alg.setHandle(handle_vertex[j], x, y, z);
-
-			std::cout << handle_vertex[j] << " = " << x << " " << y << " " << z << " " << std::endl;
-			std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
-			}
-			}
-			*/
 			
 		}
 	}
@@ -287,6 +263,7 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 		alg.updateMesh();
 
 		newskeletondata();
+
 		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 		break;
 	case 1:

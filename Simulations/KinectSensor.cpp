@@ -143,6 +143,7 @@ HRESULT KinectSensor::createFirstConnected()
 			m_hNextSkeletonEvent = CreateEventW(NULL, TRUE, FALSE, NULL);
 
 			// Open a skeleton stream to receive skeleton data
+			//hr = m_pNuiSensor->NuiSkeletonTrackingEnable(m_hNextSkeletonEvent, NUI_SKELETON_TRACKING_FLAG_ENABLE_SEATED_SUPPORT);
 			hr = m_pNuiSensor->NuiSkeletonTrackingEnable(m_hNextSkeletonEvent, 0);
 			//std::cout << "m_pNuiSensor: " << hr << std::endl;
 		}

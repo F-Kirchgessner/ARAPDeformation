@@ -53,10 +53,11 @@ private:
 
 	std::unique_ptr<GeometricPrimitive> m_pMesh;
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
-	std::vector<uint16_t> handle_vertex;
-	std::vector< pair<int,uint16_t> > SetVertex;
+	std::vector< pair<int,int> > SetVertex;
 
-	std::uint16_t totalVertxInModel = 454;
+	//std::uint16_t totalVertxInModel = 454;
+	//std::uint16_t totalVertxInModel = 4000;
+	std::int16_t model = -1;
 
 
 	ArapAlgorithm alg;
