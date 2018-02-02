@@ -48,15 +48,15 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	case 0: {
 		cout << "Draw model!\n";
 		
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../models/eagle.obj", DUC->g_pd3dImmediateContext, 1.0f, false);
 		findNeighbours(&vertexNeighbours);
 
 		// Test move vertex
 		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
-		handleHelper(353, 0, 1, 0);
-		handleHelper(65, 0, 0, 0);
-		handleHelper(165, 0, 1, 0);
-		handleHelper(258, 0, 0, 0);
+		handleHelper(535, 0, 1, 0);
+		handleHelper(5705, 0, 0, 0);
+		//handleHelper(165, 0, 1, 0);
+		//handleHelper(258, 0, 0, 0);
 
 		alg.init();
 
@@ -104,7 +104,7 @@ void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neigh
 	VertexCollection vertices = m_pMesh->GetVertexList();
 	IndexCollection indices = m_pMesh->GetIndexList();
 
-	for (uint16_t idx = 0; idx < indices.size(); idx += 3) {
+	for (size_t idx = 0; idx < indices.size(); idx += 3) {
 		insertVertexNeighbors(neighborList, indices[idx], indices[idx + 1], indices[idx + 2]);
 		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
 		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
@@ -148,8 +148,8 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 		alg.iteration_step();
 		alg.updateMesh();
 		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
-		handleHelper(353, timeStep, -timeStep, timeStep);
-		handleHelper(165,-timeStep, -timeStep, -timeStep);
+		handleHelper(535, timeStep, -timeStep, timeStep);
+		handleHelper(5705,-timeStep, -timeStep, -timeStep);
 		break;
 
 	case 1:
