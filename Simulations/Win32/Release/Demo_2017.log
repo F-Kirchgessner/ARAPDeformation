@@ -1,35 +1,76 @@
-﻿  ARAPSimulator.cpp
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/vectorbase.h(11): warning C4005: 'NOMINMAX': macro redefinition
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/vectorbase.h(11): note: command-line arguments:  see previous definition of 'NOMINMAX'
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\Users\pti\Downloads\3d\project\ARAPKinect\balas changes\ARAPDeformation\Win32\Release\effect.fxo
+  ArapAlgorithm.cpp
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(11): warning C4005: 'NOMINMAX': macro redefinition
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(11): note: command-line arguments:  see previous definition of 'NOMINMAX'
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.16299.0\shared\d3d9.h(2005): warning C4005: 'D3DERR_INVALIDCALL': macro redefinition
-  C:\Users\iamon\Documents\3d project\ARAP_withdemo\ARAP_demo\Effects11\inc\d3dx11effect.h(46): note: see previous definition of 'D3DERR_INVALIDCALL'
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\DrawingUtilitiesClass.h(245): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(28): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(125): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(127): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(144): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(230): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(259): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(282): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\collisionDetect.h(307): warning C4018: '<': signed/unsigned mismatch
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\libs\eigen\eigen\src/SVD/BDCSVD.h(959): warning C4002: too many actual parameters for macro 'V'
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\libs\eigen\eigen\src/SVD/BDCSVD.h(961): warning C4002: too many actual parameters for macro 'V'
-ARAPSimulator.cpp(55): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/quaternion.h(104): warning C4244: 'argument': conversion from 'GamePhysics::Real' to 'float', possible loss of data
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/quaternion.h(104): note: while compiling class template member function 'const DirectX::XMVECTOR GamePhysics::Quaternion<GamePhysics::Real>::toDirectXQuat(void)'
+  C:\Users\pti\Downloads\3d\project\ARAPKinect\balas changes\ARAPDeformation\Effects11\inc\d3dx11effect.h(46): note: see previous definition of 'D3DERR_INVALIDCALL'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(245): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(28): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(125): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(127): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(144): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(230): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(259): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(282): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(307): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\libs\eigen\eigen\src/SVD/BDCSVD.h(959): warning C4002: too many actual parameters for macro 'V'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\libs\eigen\eigen\src/SVD/BDCSVD.h(961): warning C4002: too many actual parameters for macro 'V'
+ArapAlgorithm.cpp(12): warning C4267: '=': conversion from 'size_t' to 'uint16_t', possible loss of data
+ArapAlgorithm.cpp(23): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned short', possible loss of data
+ArapAlgorithm.cpp(44): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+ArapAlgorithm.cpp(110): warning C4267: 'argument': conversion from 'size_t' to 'uint16_t', possible loss of data
+ArapAlgorithm.cpp(125): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned short', possible loss of data
+ArapAlgorithm.cpp(152): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned short', possible loss of data
+ArapAlgorithm.cpp(155): warning C4267: 'argument': conversion from 'size_t' to 'const unsigned short', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(204): warning C4244: 'argument': conversion from 'const GamePhysics::Real' to 'float', possible loss of data
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(203): note: while compiling class template member function 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const'
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(293): note: see reference to function template instantiation 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const' being compiled
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(859): note: see reference to class template instantiation 'GamePhysics::vector3Dim<GamePhysics::Real>' being compiled
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(777): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(773): note: while compiling class template member function 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)'
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(412): note: see reference to function template instantiation 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)' being compiled
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(411): note: see reference to class template instantiation 'GamePhysics::matrix4x4<double>' being compiled
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(776): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(775): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(774): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  ARAPSimulator.cpp
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(11): warning C4005: 'NOMINMAX': macro redefinition
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(11): note: command-line arguments:  see previous definition of 'NOMINMAX'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.16299.0\shared\d3d9.h(2005): warning C4005: 'D3DERR_INVALIDCALL': macro redefinition
+  C:\Users\pti\Downloads\3d\project\ARAPKinect\balas changes\ARAPDeformation\Effects11\inc\d3dx11effect.h(46): note: see previous definition of 'D3DERR_INVALIDCALL'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(245): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(28): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(125): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(127): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(144): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(230): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(259): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(282): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\collisionDetect.h(307): warning C4018: '<': signed/unsigned mismatch
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\libs\eigen\eigen\src/SVD/BDCSVD.h(959): warning C4002: too many actual parameters for macro 'V'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\libs\eigen\eigen\src/SVD/BDCSVD.h(961): warning C4002: too many actual parameters for macro 'V'
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/quaternion.h(104): warning C4244: 'argument': conversion from 'GamePhysics::Real' to 'float', possible loss of data
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/quaternion.h(104): note: while compiling class template member function 'const DirectX::XMVECTOR GamePhysics::Quaternion<GamePhysics::Real>::toDirectXQuat(void)'
   ARAPSimulator.cpp(305): note: see reference to function template instantiation 'const DirectX::XMVECTOR GamePhysics::Quaternion<GamePhysics::Real>::toDirectXQuat(void)' being compiled
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\Rigidbody.h(27): note: see reference to class template instantiation 'GamePhysics::Quaternion<GamePhysics::Real>' being compiled
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/vectorbase.h(204): warning C4244: 'argument': conversion from 'const GamePhysics::Real' to 'float', possible loss of data
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/vectorbase.h(203): note: while compiling class template member function 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const'
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\DrawingUtilitiesClass.h(293): note: see reference to function template instantiation 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const' being compiled
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util/vectorbase.h(859): note: see reference to class template instantiation 'GamePhysics::vector3Dim<GamePhysics::Real>' being compiled
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util\matrixbase.h(777): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util\matrixbase.h(773): note: while compiling class template member function 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)'
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\DrawingUtilitiesClass.h(412): note: see reference to function template instantiation 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)' being compiled
-  c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\DrawingUtilitiesClass.h(411): note: see reference to class template instantiation 'GamePhysics::matrix4x4<double>' being compiled
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util\matrixbase.h(776): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util\matrixbase.h(775): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\iamon\documents\3d project\arap_withdemo\arap_demo\simulations\util\matrixbase.h(774): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Demo_2017.vcxproj -> C:\Users\iamon\Documents\3d project\ARAP_withdemo\ARAP_demo\Win32\Release\Simulations.lib
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\Rigidbody.h(27): note: see reference to class template instantiation 'GamePhysics::Quaternion<GamePhysics::Real>' being compiled
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(204): warning C4244: 'argument': conversion from 'const GamePhysics::Real' to 'float', possible loss of data
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(203): note: while compiling class template member function 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const'
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(293): note: see reference to function template instantiation 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const' being compiled
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util/vectorbase.h(859): note: see reference to class template instantiation 'GamePhysics::vector3Dim<GamePhysics::Real>' being compiled
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(777): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(773): note: while compiling class template member function 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)'
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(412): note: see reference to function template instantiation 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)' being compiled
+  c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\DrawingUtilitiesClass.h(411): note: see reference to class template instantiation 'GamePhysics::matrix4x4<double>' being compiled
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(776): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(775): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\pti\downloads\3d\project\arapkinect\balas changes\arapdeformation\simulations\util\matrixbase.h(774): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  KinectSensor.cpp
+  FFmpeg.cpp
+  util.cpp
+  Demo_2017.vcxproj -> C:\Users\pti\Downloads\3d\project\ARAPKinect\balas changes\ARAPDeformation\Win32\Release\Simulations.lib
