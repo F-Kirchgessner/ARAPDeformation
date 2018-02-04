@@ -52,14 +52,14 @@ void ARAPSimulator::initUI(DrawingUtilitiesClass * DUC)
 
 void ARAPSimulator::notifyCaseChanged(int testCase)
 {
-	float scale = 0.6;
+	float scale = 1.4f;
 	m_iTestCase = testCase;
 	switch (m_iTestCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
 		//m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
-		m_pMesh = GeometricPrimitive::CreateMesh("../MaleLow.obj", DUC->g_pd3dImmediateContext, scale, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../trooper.obj", DUC->g_pd3dImmediateContext, scale, false);
 		findNeighbours(&vertexNeighbours);
 		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
 		alg.init();
@@ -145,7 +145,7 @@ void ARAPSimulator::parseConfigFile() {
 
 	//std::ifstream infile("../Simulations/skeleton_config.txt");
 	std::ifstream infile("../Simulations/IronMan_config.txt");
-	std::string line;
+	std::string line;	
 	//uint16_t skeleton_vertices[20];
 
 	if (infile.is_open())
