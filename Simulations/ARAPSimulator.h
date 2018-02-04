@@ -36,7 +36,7 @@ public:
 	void drawMesh(Vec3 pos, Vec3 rot, Vec3 scale);
 	void newskeletondata();
 
-	void parseConfigFile();
+	void parseConfigFile(string file);
 	uint16_t skeleton_vertices[20];
 	void drawMesh(Vec3 pos, Quat rot, Vec3 scale);
 	void handleHelper(int i, float x, float y, float z);

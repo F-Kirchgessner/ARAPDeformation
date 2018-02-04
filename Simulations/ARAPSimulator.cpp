@@ -15,8 +15,6 @@ ARAPSimulator::ARAPSimulator()
 	m_fSphereSize = 0.05f;
 	kinect = new KinectSensor();
 	//create an array containing the vertices that correspond to each skeleton joint
-	parseConfigFile();
-
 }
 
 const char * ARAPSimulator::getTestCasesStr() {
@@ -27,9 +25,7 @@ void ARAPSimulator::reset() {
 	m_mouse.x = m_mouse.y = 0;
 	m_trackmouse.x = m_trackmouse.y = 0;
 	m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
-
 	m_pMesh.reset();
-
 	kinect->ResetKinect1();
 
 	// TODO Release vertexNeighbours
@@ -62,6 +58,7 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		m_pMesh = GeometricPrimitive::CreateMesh("../trooper.obj", DUC->g_pd3dImmediateContext, scale, false);
 		findNeighbours(&vertexNeighbours);
 		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
+		parseConfigFile("../Simulations/IronMan_config.txt");
 		alg.init();
 
 		break;
@@ -141,10 +138,10 @@ void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >
 	}
 }
 
-void ARAPSimulator::parseConfigFile() {
+void ARAPSimulator::parseConfigFile(string file) {
 
 	//std::ifstream infile("../Simulations/skeleton_config.txt");
-	std::ifstream infile("../Simulations/IronMan_config.txt");
+	std::ifstream infile(file);
 	std::string line;	
 	//uint16_t skeleton_vertices[20];
 
@@ -169,19 +166,13 @@ void ARAPSimulator::parseConfigFile() {
 					auto val1 = value.substr(0, delimit);
 					value=value.substr(delimit + 1);
 					delimit = value.find(",");
-					SetVertex.push_back(std::pair <int, int>(i, atoi(val1.c_str())));
-					
+					SetVertex.push_back(std::pair <int, int>(i, atoi(val1.c_str())));	
 				}
-
-				
 			}
 			else
 			{
 					SetVertex.push_back(std::pair <int, int>(i, atoi(value.c_str()) ));
 			}
-			
-
-			
 			i++;
 		}
 		infile.close();
@@ -189,8 +180,11 @@ void ARAPSimulator::parseConfigFile() {
 		for (size_t ind = 0 ; ind < SetVertex.size(); ind++)
 		{
 			std::cout << "value: " << SetVertex[ind].first << " " << SetVertex[ind].second << std::endl;
+			if (SetVertex[ind].second >= 0 && SetVertex[ind].second < m_pMesh->GetVertexList().size()) {
+				handleHelper(SetVertex[ind].second, 0, 0, 0);
+				}
 		}
-		std::getchar();
+		//std::getchar();
 		
 			
 	}
@@ -206,10 +200,11 @@ void ARAPSimulator::newskeletondata()
 {
 	auto vertices_list = m_pMesh->GetVertexList();
 
-
+	size_t n = vertices_list.size();
 	//code to move the handles or move the wings 
 	NUI_SKELETON_FRAME skeletonFrame;
 	skeletonFrame = kinect->GetSkeletonframe();
+
 	for (int i = 0; i < 6; i++) //Six times, because the Kinect has space to track six people
 	{
 
@@ -219,33 +214,16 @@ void ARAPSimulator::newskeletondata()
 		if (NUI_SKELETON_TRACKED == trackingState) {
 			//Print "Right hand:"
 			std::cout << "ProcessSkeleton = " << i << std::endl;
-			
 			for (size_t j = 0; j <SetVertex.size(); j++)
 			{
 				auto MapdSkelPart = SetVertex[j].first;
-				if (SetVertex[j].second >= 0 ) {
+				if (SetVertex[j].second >= 0 && SetVertex[j].second < n) {
 					float x = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].x * 2;
 					float y = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].y * 2;
 					float z = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].z * 2;
-					
-					/*auto MapdMeshVert = SetVertex[j].second;
-					if ( MapdSkelPart == 7 || MapdSkelPart == 11 )
-					{ 
-						//alg.setHandle(MapdMeshVert, vertices_list[MapdMeshVert].position.x, y, vertices_list[MapdMeshVert].position.z);
-						m_pMesh->SetVertex(SetVertex[j].second, { vertices_list[MapdMeshVert].position.x, y, vertices_list[MapdMeshVert].position.z });
-					}						
-					else
-					{
-						//alg.setHandle(MapdMeshVert, x, y, z);
-						m_pMesh->SetVertex(SetVertex[j].second, { x, y, z });
-					}
-					*/
 
 					std::cout << SetVertex[j].second << " = " << x << " " << y << " " << z << " " << std::endl;
-					//m_pMesh->SetVertex(SetVertex[j].second, { x, y, z });
 					alg.setHandle(SetVertex[j].second, x, y, z);
-					
-					//std::cout << j << " = " << x << " " << y << " " << z << " " << std::endl;
 				}
 			}
 			
@@ -346,3 +324,4 @@ void ARAPSimulator::handleHelper(int i, float x, float y, float z) {
 	alg.setHandle(i, pos.x + x, pos.y + y, pos.z + z);
 	m_pMesh->SetVertex(i, { pos.x + x, pos.y + y, pos.z + z });
 };
+
