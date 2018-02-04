@@ -3,33 +3,49 @@
 
 
 
-void ArapAlgorithm::addMesh(
-	DirectX::GeometricPrimitive* _mesh,
-	std::map<uint16_t, std::vector<uint16_t>* >* _neighbours)
-{	
+ArapAlgorithm::ArapAlgorithm(DirectX::GeometricPrimitive * _mesh)
+{
 	mesh = _mesh;
 	VertexCollection points = _mesh->GetVertexList();
 	p_amount = points.size();
-	p_data.resize(p_amount);
 	p.resize(3, p_amount);
-	p_prime.resize(3, p_amount);
+	p_prime.resize(p_amount, 3);
 	neighbours.resize(p_amount);
 	for (size_t i = 0; i < p_amount; i++)
 	{
 		p.col(i) << points[i].position.x, points[i].position.y, points[i].position.z;
-		//cout << p.col(i) << endl;
-		p_prime.col(i) << points[i].position.x, points[i].position.y, points[i].position.z;
-		p_data[i] = Eigen::Vector3f(points[i].position.x, points[i].position.y, points[i].position.z);
-		neighbours[i] = _neighbours->at(i);
+		p_prime.row(i) << points[i].position.x, points[i].position.y, points[i].position.z;
+		neighbours[i] = new std::vector<uint16_t>();
+		neighbours[i]->reserve(7);
 	}
-
+	auto faces = _mesh->GetIndexList();
+	for (size_t idx = 0; idx < faces.size(); idx += 3) {
+		auto a = faces[idx];
+		auto b = faces[idx + 1];
+		auto c = faces[idx + 2];
+		neighbours[a]->push_back(b);
+		neighbours[a]->push_back(c);
+		neighbours[b]->push_back(a);
+		neighbours[b]->push_back(c);
+		neighbours[c]->push_back(a);
+		neighbours[c]->push_back(b);
+	}
+	cout << "Neighbours done";
+	for (auto adj_list : neighbours) {
+		for (auto k : *adj_list) {
+		}
+		sort(adj_list->begin(), adj_list->end());
+		adj_list->erase(unique(adj_list->begin(), adj_list->end()), adj_list->end());
+	}
 	R = vector<Eigen::Matrix3f>(p_amount, Eigen::Matrix3f::Identity());
+	cout << "Object creation done!";
 }
 
 void ArapAlgorithm::init() {
 	calculate_w();
 	calculate_laplacian();
 	calculate_b();
+	calculate_Si_part();
 }
 
 
@@ -40,7 +56,8 @@ void ArapAlgorithm::setHandle(uint16_t v, float x, float y, float z) {
 void ArapAlgorithm::updateMesh() {
 	for (size_t i = 0; i < p_amount; i++)
 	{	
-		XMFLOAT3 point(p_prime.col(i).x(), p_prime.col(i).y(), p_prime.col(i).z());
+		XMFLOAT3 point(p_prime.row(i).x(), p_prime.row(i).y(), p_prime.row(i).z());
+		
 		mesh->SetVertex(i, point);
 	}
 }
@@ -77,9 +94,9 @@ float ArapAlgorithm::calculate_wij(uint16_t i, uint16_t j) {
 	}
 
 	//Calculate the individual wij using the weight formula
-	Eigen::Vector3f vi = p_data[i];
-	Eigen::Vector3f vj = p_data[j];
-	Eigen::Vector3f va = p_data[shared[0]];
+	Eigen::Vector3f vi = p.col(i);
+	Eigen::Vector3f vj = p.col(j);
+	Eigen::Vector3f va = p.col(shared[0]);
 	
 
 
@@ -90,7 +107,7 @@ float ArapAlgorithm::calculate_wij(uint16_t i, uint16_t j) {
 
 	float beta_cos = 0;
 	if (shared.size() > 1) { //Some edges only have one shared vertex
-		Eigen::Vector3f vb = p_data[shared[1]];
+		Eigen::Vector3f vb = p.col(shared[1]);
 		float e4 = (vi - vb).norm();
 		float e5 = (vb - vj).norm();
 		beta_cos = fabs((e4*e4 + e5*e5 - e1*e1) / (2 * e4*e5));
@@ -149,8 +166,7 @@ void ArapAlgorithm::calculate_b() {
 	b.fill(0);
 	for (size_t i = 0; i < p_amount; i++)
 	{
-		bool isHandle = handles.count(i) == 1;
-		if (isHandle) {
+		if (handles.count(i) > 0) {
 			//Handles get set to their fixed position
 			b.row(i) = handles[i];
 		}
@@ -166,43 +182,47 @@ void ArapAlgorithm::calculate_b() {
 }
 
 float ArapAlgorithm::calculate_p_prime() {
-	Eigen::VectorXf b_vectorized(Eigen::VectorXf::Map(b.data(), b.cols()*b.rows()));
-	p_prime = cholesky.solve(b).transpose();
-	return (p_prime - p).norm() / p.norm();
+	p_prime = cholesky.solve(b);
+	//return (p_prime - p).norm() / p.norm();
+	return 0; // Performance :)
 }
 
+
+
 void ArapAlgorithm::calculate_R() {
+	Eigen::MatrixXf Pi_prime;
+	Eigen::Matrix<float, 3, 3> Si;
+	for (size_t i = 0; i < p_amount; i++)
+	{
+		size_t n = neighbours[i]->size();
+		Pi_prime.resize(n, 3);
+		for (size_t index_j = 0; index_j < n; index_j++)
+		{	
+			uint16_t j = neighbours[i]->at(index_j);
+			Pi_prime.row(index_j) = p_prime.row(i) - p_prime.row(j);
+		}
+		Si = Si_part[i]*Pi_prime;
+		Eigen::JacobiSVD<Eigen::MatrixXf, Eigen::NoQRPreconditioner> svd(Si, Eigen::ComputeFullU | Eigen::ComputeFullV);
+		R[i] = svd.matrixV()*svd.matrixU().transpose();
+	}
+}
+
+void ArapAlgorithm::calculate_Si_part()
+{
 	Eigen::MatrixXf Di;
 	Eigen::MatrixXf Pi;
-	Eigen::MatrixXf Pi_prime;
-	Eigen::MatrixXf Si;
+	Si_part.resize(p_amount);
 	for (size_t i = 0; i < p_amount; i++)
 	{
 		size_t n = neighbours[i]->size();
 		Di = Eigen::MatrixXf::Zero(n, n);
-		Pi_prime.resize(3, n);
 		Pi.resize(3, n);
 		for (size_t index_j = 0; index_j < n; index_j++)
-		{	
+		{
 			uint16_t j = neighbours[i]->at(index_j);
 			Di(index_j, index_j) = w.coeffRef(i, j);
 			Pi.col(index_j) = p.col(i) - p.col(j);
-			Pi_prime.col(index_j) = p_prime.col(i) - p_prime.col(j);
 		}
-		Si = Pi*Di*Pi_prime.transpose();
-		//assert(Si.determinant() > 0);
-		Eigen::JacobiSVD<Eigen::MatrixXf, Eigen::FullPivHouseholderQRPreconditioner> svd(Si, Eigen::ComputeFullU | Eigen::ComputeFullV);
-
-		/*if (svd.matrixU().determinant() < 0)
-			std::cout << "U determinant is negative!" << std::endl << svd.matrixU() << std::endl;
-		else
-			std::cout <<"U----------------------------------------------------------------------";
-
-		if (svd.matrixV().determinant() < 0)
-			std::cout << "V determinant is negative!" << std::endl << svd.matrixV() << std::endl;*/
-		R[i] = svd.matrixV()*svd.matrixU().transpose();
-		/*if (R[i].determinant() < 0)
-			std::cout << "determinant is negative!" << std::endl;*/
+		Si_part[i] = Pi*Di;
 	}
-
-} 
+}

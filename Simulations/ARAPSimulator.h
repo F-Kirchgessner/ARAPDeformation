@@ -60,7 +60,7 @@ private:
 	std::int16_t model = -1;
 
 
-	ArapAlgorithm alg;
+	ArapAlgorithm* alg;
 };
 
 #endif

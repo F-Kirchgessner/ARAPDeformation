@@ -56,11 +56,14 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 		cout << "Draw model!\n";
 		//m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
 		m_pMesh = GeometricPrimitive::CreateMesh("../trooper.obj", DUC->g_pd3dImmediateContext, scale, false);
-		findNeighbours(&vertexNeighbours);
-		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
-		parseConfigFile("../Simulations/IronMan_config.txt");
-		alg.init();
 
+		alg = new ArapAlgorithm(m_pMesh.get());
+		parseConfigFile("../Simulations/IronMan_config.txt");
+
+		alg->init();
+		cout << "Init done";
+		// Update vertex buffer do display changes
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 		break;
 	}
 	case 1:
@@ -96,45 +99,6 @@ void ARAPSimulator::externalForcesCalculations(float timeElapsed)
 	}
 	else {
 		m_vfMovableObjectFinalPos = m_vfMovableObjectPos;
-	}
-}
-
-
-void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neighborList) {
-	VertexCollection vertices = m_pMesh->GetVertexList();
-	IndexCollection indices = m_pMesh->GetIndexList();
-
-	for (size_t idx = 0; idx < indices.size(); idx += 3) {
-		insertVertexNeighbors(neighborList, indices[idx], indices[idx + 1], indices[idx + 2]);
-		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
-		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
-	}
-	//Sort neighborlists, this is later important for wij calculations
-	for (auto kv : *neighborList) {
-		sort(kv.second->begin(), kv.second->end());
-	}
-}
-
-
-void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >* neighborList, uint16_t vertex, uint16_t neighb1, uint16_t neighb2) {
-	map<uint16_t, vector<uint16_t>* >::iterator iter = neighborList->find(vertex);
-
-	// Not present
-	if (iter == neighborList->end()) {
-		vector<uint16_t>* neighbors = new vector<uint16_t>();
-		neighbors->push_back(neighb1);
-		neighbors->push_back(neighb2);
-		neighborList->insert(pair<uint16_t, vector<uint16_t>* >(vertex, neighbors));
-	}
-	// Exists already
-	else {
-		vector<uint16_t>* neighbors = iter->second;
-		if (std::find(neighbors->begin(), neighbors->end(), neighb1) == neighbors->end()) {
-			neighbors->push_back(neighb1);
-		}
-		if (std::find(neighbors->begin(), neighbors->end(), neighb2) == neighbors->end()) {
-			neighbors->push_back(neighb2);
-		}
 	}
 }
 
@@ -199,7 +163,6 @@ void ARAPSimulator::parseConfigFile(string file) {
 void ARAPSimulator::newskeletondata()
 {
 	auto vertices_list = m_pMesh->GetVertexList();
-
 	size_t n = vertices_list.size();
 	//code to move the handles or move the wings 
 	NUI_SKELETON_FRAME skeletonFrame;
@@ -223,7 +186,7 @@ void ARAPSimulator::newskeletondata()
 					float z = skeletonFrame.SkeletonData[i].SkeletonPositions[MapdSkelPart].z * 2;
 
 					std::cout << SetVertex[j].second << " = " << x << " " << y << " " << z << " " << std::endl;
-					alg.setHandle(SetVertex[j].second, x, y, z);
+					alg->setHandle(SetVertex[j].second, x, y, z);
 				}
 			}
 			
@@ -237,9 +200,8 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 	switch (m_iTestCase)
 	{// handling different cases
 	case 0:
-		alg.iteration_step();
-		alg.updateMesh();
-
+		alg->iteration_step();
+		alg->updateMesh();
 		newskeletondata();
 
 		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
@@ -321,7 +283,7 @@ void ARAPSimulator::drawMesh(Vec3 pos, Vec3 rot, Vec3 scale)
 //This is just a helper function for Testing purposes!
 void ARAPSimulator::handleHelper(int i, float x, float y, float z) {
 	auto pos = m_pMesh->GetVertexList()[i].position;
-	alg.setHandle(i, pos.x + x, pos.y + y, pos.z + z);
+	alg->setHandle(i, pos.x + x, pos.y + y, pos.z + z);
 	m_pMesh->SetVertex(i, { pos.x + x, pos.y + y, pos.z + z });
 };
 
