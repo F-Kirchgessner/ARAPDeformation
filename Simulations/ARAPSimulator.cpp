@@ -59,7 +59,7 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	case 0: {
 		cout << "Draw model!\n";
 		//m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
-		m_pMesh = GeometricPrimitive::CreateMesh("../Iron_Man.obj", DUC->g_pd3dImmediateContext, scale, false);
+		m_pMesh = GeometricPrimitive::CreateMesh("../MaleLow.obj", DUC->g_pd3dImmediateContext, scale, false);
 		findNeighbours(&vertexNeighbours);
 		alg.addMesh(m_pMesh.get(), &vertexNeighbours);
 		alg.init();
