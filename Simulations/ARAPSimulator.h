@@ -48,7 +48,7 @@ private:
 	std::map<uint16_t, vector<uint16_t>* > vertexNeighbours;
 
 
-	ArapAlgorithm alg;
+	ArapAlgorithm* alg;
 };
 
 #endif
