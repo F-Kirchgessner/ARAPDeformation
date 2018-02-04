@@ -47,23 +47,20 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
-		
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.05f, false);
-		//findNeighbours(&vertexNeighbours);
+		m_pMesh = GeometricPrimitive::CreateMesh("../models/eagle.obj", DUC->g_pd3dImmediateContext, 1.0f, false);
 
-		// Test move vertex
 		alg = new ArapAlgorithm(m_pMesh.get());
-		handleHelper(353, 0, 1, 0);
-		handleHelper(65, 0, 0, 0);
-		handleHelper(165, 0, 1, 0);
-		handleHelper(258, 0, 0, 0);
+		// Test move vertex
+		handleHelper(535, 0, 1, 0);
+		handleHelper(5705, 0, 0, 0);
+		//handleHelper(165, 0, 1, 0);
+		//handleHelper(258, 0, 0, 0);
 
 		alg->init();
 		cout << "Init done";
 		// Update vertex buffer do display changes
 		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 
-		cout << "Init done";
 		break;
 	}
 	case 1:
@@ -109,8 +106,8 @@ void ARAPSimulator::simulateTimestep(float timeStep)
 		alg->iteration_step();
 		alg->updateMesh();
 		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
-		handleHelper(353, timeStep, -timeStep, timeStep);
-		handleHelper(165,-timeStep, -timeStep, -timeStep);
+		handleHelper(535, timeStep, -timeStep, timeStep);
+		handleHelper(5705,-timeStep, -timeStep, -timeStep);
 		break;
 
 	case 1:
