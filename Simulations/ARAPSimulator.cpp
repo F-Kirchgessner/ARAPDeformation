@@ -47,17 +47,19 @@ void ARAPSimulator::notifyCaseChanged(int testCase)
 	{
 	case 0: {
 		cout << "Draw model!\n";
-		
-		m_pMesh = GeometricPrimitive::CreateMesh("../Butterfly.obj", DUC->g_pd3dImmediateContext, 0.01f, false);
-		findNeighbours(&vertexNeighbours);
+		m_pMesh = GeometricPrimitive::CreateMesh("../models/eagle.obj", DUC->g_pd3dImmediateContext, 1.0f, false);
 
+		alg = new ArapAlgorithm(m_pMesh.get());
 		// Test move vertex
-		/*uint16_t index = 0;
-		XMFLOAT3 newPosition = { 100,100,100 };
-		m_pMesh->SetVertex(index, newPosition);
+		handleHelper(535, 0, 1, 0);
+		handleHelper(5705, 0, 0, 0);
+		//handleHelper(165, 0, 1, 0);
+		//handleHelper(258, 0, 0, 0);
 
+		alg->init();
+		cout << "Init done";
 		// Update vertex buffer do display changes
-		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);*/
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
 
 		break;
 	}
@@ -95,55 +97,17 @@ void ARAPSimulator::externalForcesCalculations(float timeElapsed)
 	}
 }
 
-
-void ARAPSimulator::findNeighbours(std::map<uint16_t, vector<uint16_t>* >* neighborList) {
-	VertexCollection vertices = m_pMesh->GetVertexList();
-	IndexCollection indices = m_pMesh->GetIndexList();
-
-	for (uint16_t idx = 0; idx < indices.size(); idx += 3) {
-		insertVertexNeighbors(neighborList, indices[idx], indices[idx + 1], indices[idx + 2]);
-		insertVertexNeighbors(neighborList, indices[idx + 1], indices[idx], indices[idx + 2]);
-		insertVertexNeighbors(neighborList, indices[idx + 2], indices[idx + 1], indices[idx]);
-	}
-}
-
-
-void ARAPSimulator::insertVertexNeighbors(std::map<uint16_t, vector<uint16_t>* >* neighborList, uint16_t vertex, uint16_t neighb1, uint16_t neighb2) {
-	map<uint16_t, vector<uint16_t>* >::iterator iter = neighborList->find(vertex);
-
-	// Not present
-	if (iter == neighborList->end()) {
-		vector<uint16_t>* neighbors = new vector<uint16_t>();
-		neighbors->push_back(neighb1);
-		neighbors->push_back(neighb2);
-		neighborList->insert(pair<uint16_t, vector<uint16_t>* >(vertex, neighbors));
-	}
-	// Exists already
-	else {
-		vector<uint16_t>* neighbors = iter->second;
-		if (std::find(neighbors->begin(), neighbors->end(), neighb1) == neighbors->end()) {
-			neighbors->push_back(neighb1);
-		}
-		if (std::find(neighbors->begin(), neighbors->end(), neighb2) == neighbors->end()) {
-			neighbors->push_back(neighb2);
-		}
-	}
-}
-
-
 void ARAPSimulator::simulateTimestep(float timeStep)
 {
 	// update current setup for each frame
 	switch (m_iTestCase)
 	{// handling different cases
 	case 0:
-		// rotate the teapot
-		/*m_vfRotate.x += timeStep;
-		if (m_vfRotate.x > 2 * M_PI) m_vfRotate.x -= 2.0f * (float)M_PI;
-		m_vfRotate.y += timeStep;
-		if (m_vfRotate.y > 2 * M_PI) m_vfRotate.y -= 2.0f * (float)M_PI;
-		m_vfRotate.z += timeStep;
-		if (m_vfRotate.z > 2 * M_PI) m_vfRotate.z -= 2.0f * (float)M_PI;*/
+		alg->iteration_step();
+		alg->updateMesh();
+		m_pMesh->UpdateBuffer(DUC->g_pd3dImmediateContext);
+		handleHelper(535, timeStep, -timeStep, timeStep);
+		handleHelper(5705,-timeStep, -timeStep, -timeStep);
 		break;
 
 	case 1:
@@ -214,3 +178,10 @@ void ARAPSimulator::onMouse(int x, int y)
 	m_trackmouse.x = x;
 	m_trackmouse.y = y;
 }
+
+//This is just a helper function for Testing purposes!
+void ARAPSimulator::handleHelper(int i, float x, float y, float z) {
+	auto pos = m_pMesh->GetVertexList()[i].position;
+	alg->setHandle(i, pos.x + x, pos.y + y, pos.z + z);
+	m_pMesh->SetVertex(i, { pos.x + x, pos.y + y, pos.z + z });
+};
